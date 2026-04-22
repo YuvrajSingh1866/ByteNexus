@@ -1,23 +1,48 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/subjects.css";
-
+import Footer from "../components/Footer";
 const Subjects = () => {
   const [subjects, setSubjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/subjects")
       .then((res) => res.json())
       .then((data) => {
-        setSubjects(data);
+        // ➕ add extra demo subjects
+        const extra = [
+          {
+            id: 5,
+            name: "OOP",
+            resources: {
+              notes: "#",
+              pyqs: "#",
+              practice: "#"
+            }
+          },
+          {
+            id: 6,
+            name: "DSA",
+            resources: {
+              notes: "#",
+              pyqs: "#",
+              practice: "#"
+            }
+          }
+        ];
+
+        setSubjects([...data, ...extra]);
       });
   }, []);
 
-  const filteredSubjects = subjects.filter((sub) =>
-    sub.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSubjects =
+    searchTerm.trim() === ""
+      ? subjects
+      : subjects.filter((sub) =>
+          sub.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
   return (
     <>
@@ -34,78 +59,47 @@ const Subjects = () => {
           </p>
         </div>
 
-        {/* 🔍 SEARCH */}
+        {/* SEARCH */}
         <div className="search-bar">
           <input
             type="text"
             placeholder="Search subject..."
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setSelectedSubject(null);
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        {/* 📚 SUBJECT LIST */}
-        <div className="subjects-content">
-          {filteredSubjects.length === 0 ? (
-            <p className="no-results">No subjects found 😢</p>
-          ) : (
-            filteredSubjects.map((sub) => (
-              <div
-                key={sub.id}
-                onClick={() => setSelectedSubject(sub)}
-                className={`subject-card ${
-                  selectedSubject?.id === sub.id ? "active" : ""
-                }`}
-              >
-                <div className="subject-name">{sub.name}</div>
+        {/* GRID */}
+        <div className="subjects-grid">
+          {filteredSubjects.map((sub) => (
+            <div
+              key={sub.id}
+              className={`subject-card ${
+                activeId === sub.id ? "active" : ""
+              }`}
+              onClick={() =>
+                setActiveId(activeId === sub.id ? null : sub.id)
+              }
+            >
+              <div className="subject-name">{sub.name}</div>
+
+              <div className="subject-desc">
+                Click to explore resources
               </div>
-            ))
-          )}
+
+              {/* EXPAND INSIDE CARD */}
+              {activeId === sub.id && sub.resources && (
+                <div className="card-resources">
+                  <a href={sub.resources.notes} target="_blank">📘 Notes</a>
+                  <a href={sub.resources.pyqs} target="_blank">📝 PYQs</a>
+                  <a href={sub.resources.practice} target="_blank">💻 Practice</a>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-
-        {/* 📂 RESOURCES */}
-        {selectedSubject && (
-          <div className="resources-section">
-            <h2>{selectedSubject.name}</h2>
-
-            {selectedSubject.resources ? (
-              <div className="resource-links">
-                <a
-                  href={selectedSubject.resources.notes}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="resource-btn"
-                >
-                  📘 Notes
-                </a>
-
-                <a
-                  href={selectedSubject.resources.pyqs}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="resource-btn"
-                >
-                  📝 PYQs
-                </a>
-
-                <a
-                  href={selectedSubject.resources.practice}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="resource-btn"
-                >
-                  💻 Practice
-                </a>
-              </div>
-            ) : (
-              <p>No resources available</p>
-            )}
-          </div>
-        )}
       </main>
+      <Footer />
     </>
   );
 };
