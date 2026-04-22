@@ -1,0 +1,408 @@
+/* ═══════════════════════════════════════════════════════════════
+   PlaygroundPage.css
+   Matches ByteNexus dark theme. No background animation on this page.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Kill the canvas animation that lives on the home page ── */
+#bg-canvas {
+  display: none !important;
+  animation: none !important;
+}
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.playground-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 50px 30px;
+  text-align: center;
+  color: var(--text-primary, #ffffff);
+  background-color: transparent;
+  
+}
+
+/* ── Heading & subtitle ───────────────────────────────────── */
+.playground-title {
+  font-size: 4.4rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #ffffff;
+  
+}
+
+.playground-subtitle {
+  font-size: 1.1rem;
+  color: #a0b0c8;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+/* ── Main navigation links (Challenges / Resources / Courses) */
+.playground-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 60px;
+}
+
+.playground-link {
+  display: inline-block;
+  padding: 12px 28px;
+  background-color: #1a73e8;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.playground-link:hover {
+  background-color: #1558b0;
+  transform: translateY(-2px);
+}
+
+/* ── Collaborative Rooms section ──────────────────────────── */
+.room-section {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 36px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+
+.room-section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #7eb8ff;
+  margin-bottom: 10px;
+}
+
+.room-section-subtitle {
+  font-size: 0.95rem;
+  color: #8899aa;
+  margin-bottom: 28px;
+}
+
+/* Create Room & Join Room buttons */
+.room-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.room-btn {
+  padding: 13px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.room-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: #ffffff;
+}
+
+.join-btn {
+  background: linear-gradient(135deg, #00c49a, #007a5e);
+  color: #ffffff;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL STYLES
+═══════════════════════════════════════════════════════════════ */
+
+/* Dark overlay behind the modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;                        /* covers the full screen */
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The white/dark card */
+.modal-card {
+  background: #0f1c2e;
+  border: 1px solid rgba(100, 160, 255, 0.2);
+  border-radius: 14px;
+  padding: 32px 36px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s ease;
+  color: #e0eaff;
+}
+
+/* Smaller card for Join Room */
+.small-card {
+  max-width: 380px;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Header row: title + close button */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #7eb8ff;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #8899aa;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.2s;
+}
+
+.modal-close-btn:hover {
+  color: #ffffff;
+}
+
+
+/* ── Room Options Table ────────────────────────────────────── */
+.room-options-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+}
+
+.room-options-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.room-options-table tr:last-child {
+  border-bottom: none;
+}
+
+.option-label {
+  padding: 14px 12px 14px 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8899aa;
+  white-space: nowrap;
+  width: 140px;
+  vertical-align: top;
+}
+
+.room-options-table td:last-child {
+  padding: 10px 0;
+}
+
+/* Topic dropdown */
+.option-select {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 7px;
+  border: 1px solid rgba(100, 160, 255, 0.25);
+  background: #162030;
+  color: #e0eaff;
+  font-size: 0.92rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.option-select:focus {
+  border-color: #1a73e8;
+}
+
+/* Difficulty buttons */
+.difficulty-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.difficulty-btn {
+  padding: 7px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #162030;
+  color: #a0b0c8;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.difficulty-btn:hover {
+  border-color: #1a73e8;
+  color: #ffffff;
+}
+
+/* Active states per difficulty */
+.active-easy   { background: #0a6640; border-color: #00c49a; color: #00ffc4; }
+.active-medium { background: #6b4a00; border-color: #f59e0b; color: #fbbf24; }
+.active-hard   { background: #6b0a0a; border-color: #ef4444; color: #fca5a5; }
+
+/* Invite friends row */
+.invite-row {
+  display: flex;
+  gap: 8px;
+}
+
+.invite-input {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(100, 160, 255, 0.25);
+  background: #162030;
+  color: #e0eaff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.invite-input:focus {
+  border-color: #1a73e8;
+}
+
+.invite-add-btn {
+  padding: 9px 16px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.invite-add-btn:hover {
+  background: #1558b0;
+}
+
+/* Invited friend chips */
+.invited-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.friend-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(26, 115, 232, 0.15);
+  border: 1px solid rgba(26, 115, 232, 0.35);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  color: #7eb8ff;
+}
+
+.chip-remove {
+  background: transparent;
+  border: none;
+  color: #7eb8ff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.chip-remove:hover {
+  color: #ef4444;
+}
+
+/* ── Modal action buttons ──────────────────────────────────── */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-cancel {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 7px;
+  color: #8899aa;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-cancel:hover {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-create {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  border: none;
+  border-radius: 7px;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-create:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ── Join Room modal extras ────────────────────────────────── */
+.join-hint {
+  font-size: 0.9rem;
+  color: #8899aa;
+  margin-bottom: 16px;
+}
+
+.join-input {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(100, 160, 255, 0.3);
+  background: #162030;
+  color: #e0eaff;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  outline: none;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+.join-input:focus {
+  border-color: #1a73e8;
+}
