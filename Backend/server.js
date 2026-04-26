@@ -1,4 +1,4 @@
-require("dotenv").config(); // 👈 add this
+require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
+const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
+
 const connectDB = require("./config/db");
 
 const app = express();
@@ -20,10 +22,11 @@ app.use(express.json());
 // routes
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/rooms", roomRoutes); // 👈 NEW ROUTE ADDED
 
 // base route
-app.get("/", (req,res)=>{
- res.send("ByteNexus Backend Running 🚀");
+app.get("/", (req, res) => {
+  res.send("ByteNexus Backend Running 🚀");
 });
 
 // 404 handler
@@ -39,6 +42,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, ()=>{
- console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
