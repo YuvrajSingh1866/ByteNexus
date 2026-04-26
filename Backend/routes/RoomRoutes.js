@@ -50,7 +50,7 @@ router.get("/accept/:token", async (req, res) => {
     await invite.save();
 
     // 👉 redirect to frontend
-    res.redirect(`http://localhost:5000/room/${token}`);
+    res.redirect(`http://localhost:5173/room/${token}`);
 
   } catch (err) {
     res.status(500).send("Server error");
