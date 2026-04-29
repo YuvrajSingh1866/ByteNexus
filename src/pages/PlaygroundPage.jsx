@@ -34,15 +34,33 @@ const CreateRoomModal = ({ onClose }) => {
   }
 
   // Submit – wire this to your backend later
-  const handleCreate = () => {
-    if (!topic || !difficulty) {
-      alert('Please select a topic and difficulty.')
-      return
-    }
-    console.log('Room Created:', { topic, difficulty, invitedFriends })
-    // TODO: call your API here
-    onClose()
+  const handleCreate = async () => {
+  if (!topic || !difficulty) {
+    alert('Please select a topic and difficulty.')
+    return
   }
+
+  const res = await fetch("http://localhost:5000/api/rooms/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      topic,
+      difficulty,
+      invitedFriends
+    })
+  })
+
+  const data = await res.json()
+
+  if (res.ok) {
+    alert("Room created & invites sent 🚀")
+    onClose()
+  } else {
+    alert(data.message)
+  }
+}
 
   return (
     // Clicking the dark overlay closes the modal
