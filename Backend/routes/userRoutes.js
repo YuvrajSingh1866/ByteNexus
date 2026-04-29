@@ -34,6 +34,9 @@ router.post("/signup", async (req, res) => {
 
     console.log("✅ User saved:", user.email);
 
+    // Save user ID in session automatically upon signup
+    req.session.userId = user._id;
+
    res.status(201).json({
   message: "Signup successful 🎉",
   user: {
@@ -75,6 +78,9 @@ router.post("/login", async (req, res) => {
 
     console.log("✅ User logged in:", user.email);
 
+    // Save user ID in session
+    req.session.userId = user._id;
+
     // success response
     res.status(200).json({
       message: "Login successful 🎉",
@@ -91,5 +97,35 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// ================= LOGOUT =================
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return res.status(500).json({ message: "Could not log out. Please try again." });
+    }
+    res.clearCookie("connect.sid");
+    res.status(200).json({ message: "Logout successful 🎉" });
+  });
+});
+
+// ================= ME (Get Current User) =================
+router.get("/me", async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Unauthorized: No active session" });
+    }
+
+    const user = await User.findById(req.session.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

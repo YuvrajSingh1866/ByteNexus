@@ -5,21 +5,27 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const timeoutRef = useRef(null);
 
-  // 🔥 USER STATE
+  // JWT + USER STATE
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    const token = localStorage.getItem("token");
+
+    // check both token + user
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const handleLogout = () => {
+    // remove both JWT + user
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
     setUser(null);
-    navigate("/"); // redirect without reload
+    navigate("/");
   };
 
   const courseSubjects = [
@@ -82,6 +88,7 @@ const Navbar = () => {
           transition: transform 0.25s ease, opacity 0.2s;
           display: inline-block;
         }
+
         .has-dropdown:hover > a::after {
           transform: rotate(180deg);
           opacity: 1;
@@ -152,8 +159,12 @@ const Navbar = () => {
             <li
               key={index}
               className={item.dropdown ? "has-dropdown" : ""}
-              onMouseEnter={() => item.dropdown && handleMouseEnter(item.name)}
-              onMouseLeave={() => item.dropdown && handleMouseLeave()}
+              onMouseEnter={() =>
+                item.dropdown && handleMouseEnter(item.name)
+              }
+              onMouseLeave={() =>
+                item.dropdown && handleMouseLeave()
+              }
             >
               {item.link.startsWith("/") ? (
                 <Link to={item.link}>{item.name}</Link>
@@ -162,9 +173,17 @@ const Navbar = () => {
               )}
 
               {item.dropdown && (
-                <div className={`dropdown-menu ${activeDropdown === item.name ? "open" : ""}`}>
+                <div
+                  className={`dropdown-menu ${
+                    activeDropdown === item.name ? "open" : ""
+                  }`}
+                >
                   {item.dropdown.map((sub, i) => (
-                    <Link key={i} to={sub.link} className="dropdown-item">
+                    <Link
+                      key={i}
+                      to={sub.link}
+                      className="dropdown-item"
+                    >
                       {sub.icon} {sub.name}
                     </Link>
                   ))}
@@ -173,23 +192,37 @@ const Navbar = () => {
             </li>
           ))}
 
-          {/* 🔥 AUTH SECTION */}
+          {/* AUTH SECTION */}
           {user ? (
             <li>
-              <span style={{ color: "#38bdf8", marginRight: "10px" }}>
+              <span
+                style={{
+                  color: "#38bdf8",
+                  marginRight: "10px",
+                }}
+              >
                 👋 {user.name}
               </span>
-              <button className="nav-cta" onClick={handleLogout}>
+
+              <button
+                className="nav-cta"
+                onClick={handleLogout}
+              >
                 Logout →
               </button>
             </li>
           ) : (
             <>
               <li>
-                <Link to="/Signup" className="nav-cta">Sign-up →</Link>
+                <Link to="/Signup" className="nav-cta">
+                  Sign-up →
+                </Link>
               </li>
+
               <li>
-                <Link to="/Login" className="nav-cta">Login →</Link>
+                <Link to="/Login" className="nav-cta">
+                  Login →
+                </Link>
               </li>
             </>
           )}

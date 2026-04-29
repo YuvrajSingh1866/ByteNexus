@@ -5,7 +5,6 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 
 const Login = () => {
-
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -40,16 +39,20 @@ const Login = () => {
       const data = await res.json();
 
       if (res.ok) {
-  setMessage("✅ Login successful 🎉");
+        setMessage("✅ Login successful 🎉");
 
-  // store user
-  localStorage.setItem("user", JSON.stringify(data.user));
+        // Store JWT Token
+        localStorage.setItem("token", data.token);
 
-  // redirect after short delay
-  setTimeout(() => {
-    navigate("/");
-  }, 800);
-} else {
+        // Store User Data
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // Redirect
+        setTimeout(() => {
+          navigate("/");
+        }, 800);
+
+      } else {
         setMessage("❌ " + data.message);
       }
 
@@ -66,7 +69,7 @@ const Login = () => {
       <Navbar />
 
       <h1 className='login-heading'>
-        <span className="gradient-text">Welcome Back</span><br/>
+        <span className="gradient-text">Welcome Back</span><br />
         <span className='login-sub'>
           Continue your journey with ByteNexus 🚀
         </span>
@@ -78,24 +81,24 @@ const Login = () => {
           <h2>Login</h2>
 
           <form className='login-form' onSubmit={handleSubmit}>
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Email" 
-              required 
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
               onChange={handleChange}
             />
 
-            <input 
-              type="password" 
-              name="password" 
-              placeholder="Password" 
-              required 
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
               onChange={handleChange}
             />
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className='login-btn'
               disabled={loading}
             >
@@ -103,7 +106,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Message */}
           {message && <p className="login-message">{message}</p>}
 
           <p className='login-signup'>

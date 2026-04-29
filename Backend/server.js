@@ -3,6 +3,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStoreRaw = require("connect-mongo");
+const MongoStore = MongoStoreRaw.default || MongoStoreRaw;
 
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
@@ -16,8 +19,25 @@ const app = express();
 connectDB();
 
 // middleware
-app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: ["http://localhost:3000", "http://localhost:5174"],
+  credentials: true
+}));
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "default_super_secret_key",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bytenexus"
+  }),
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax"
+  }
+}));
 
 // routes
 app.use("/api/subjects", subjectRoutes);
