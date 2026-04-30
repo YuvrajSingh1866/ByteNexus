@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStoreRaw = require("connect-mongo");
 const MongoStore = MongoStoreRaw.default || MongoStoreRaw;
-
+const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
@@ -21,7 +21,7 @@ connectDB();
 // middleware
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:5174"],
+  origin: ["http://localhost:3000", "http://localhost:5173"],
   credentials: true
 }));
 
@@ -42,7 +42,7 @@ app.use(session({
 // routes
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/rooms", roomRoutes); // 👈 NEW ROUTE ADDED
+app.use("/api/rooms", protect, roomRoutes); // 👈 NEW ROUTE ADDED WITH AUTHENTICATION
 
 // base route
 app.get("/", (req, res) => {

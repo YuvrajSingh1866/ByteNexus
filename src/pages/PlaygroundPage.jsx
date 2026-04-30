@@ -45,6 +45,7 @@ const CreateRoomModal = ({ onClose }) => {
     headers: {
       "Content-Type": "application/json"
     },
+    credentials: "include",
     body: JSON.stringify({
       topic,
       difficulty,

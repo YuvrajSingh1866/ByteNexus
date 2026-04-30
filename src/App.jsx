@@ -17,6 +17,7 @@ import PlaygroundPage from './pages/PlaygroundPage'
 import Courses from './pages/Courses'
 import Signup from './components/Signup'
 import Login from './components/Login'
+import ProtectedRoute from './components/ProtectedRoute'
 function App() {
   const [isMorning, setIsMorning] = useState(false)
 
@@ -319,6 +320,11 @@ function App() {
       <Route path="/courses" element={<Courses />} />
       <Route path='/Signup' element={<Signup />} />
       <Route path='/Login' element={<Login />} />
+      <Route path="/protected" element={
+        <ProtectedRoute>
+          <PlaygroundPage />
+        </ProtectedRoute>
+      } />
     </Routes>
     </div>
   )

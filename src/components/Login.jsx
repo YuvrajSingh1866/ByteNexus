@@ -33,6 +33,8 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: "include",
+
         body: JSON.stringify(formData)
       });
 
@@ -41,8 +43,7 @@ const Login = () => {
       if (res.ok) {
         setMessage("✅ Login successful 🎉");
 
-        // Store JWT Token
-        localStorage.setItem("token", data.token);
+      
 
         // Store User Data
         localStorage.setItem("user", JSON.stringify(data.user));

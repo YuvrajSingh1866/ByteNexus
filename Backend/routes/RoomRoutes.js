@@ -4,24 +4,30 @@ const { v4: uuidv4 } = require("uuid");
 
 const Invite = require("../models/Invite");
 const sendEmail = require("../utils/sendEmail");
-
+const protect = require("../middleware/auth"); // 👈 ADD THIS
 // 🔥 CREATE ROOM + SEND INVITES
-router.post("/create", async (req, res) => {
-  try {
-    console.log("📥 BODY:", req.body);
 
+router.post("/create", protect, async (req, res) => {
+  console.log("SESSION DATA:", req.session);
+  try {
     const { topic, difficulty, invitedFriends } = req.body;
+
+    const senderId = req.session.userId; // 👈 WHO SENT INVITE
 
     if (!invitedFriends || invitedFriends.length === 0) {
       return res.status(400).json({ message: "No emails provided" });
     }
 
     for (let email of invitedFriends) {
-      console.log("➡️ Sending to:", email);
-
       const token = uuidv4();
 
-      await Invite.create({ email, token });
+      await Invite.create({
+        email,
+        token,
+        sender: senderId, // 👈 store sender
+        topic,
+        difficulty
+      });
 
       const link = `http://localhost:5000/api/rooms/accept/${token}`;
 
@@ -31,7 +37,7 @@ router.post("/create", async (req, res) => {
     res.json({ message: "Invites sent 🚀" });
 
   } catch (err) {
-    console.error("🔥 ERROR:", err); // 👈 CRITICAL
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });

@@ -5,27 +5,46 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const timeoutRef = useRef(null);
 
-  // JWT + USER STATE
+  // ✅ SESSION USER STATE
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // ✅ GET USER FROM SESSION (/me)
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/users/me", {
+          credentials: "include", // 🔥 REQUIRED
+        });
 
-    // check both token + user
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-    }
+        const data = await res.json();
+
+        if (res.ok) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error(err);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
   }, []);
 
-  const handleLogout = () => {
-    // remove both JWT + user
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+  // ✅ LOGOUT (SESSION)
+  const handleLogout = async () => {
+    await fetch("http://localhost:5000/api/users/logout", {
+      method: "POST",
+      credentials: "include",
+    });
 
     setUser(null);
-    navigate("/");
+    navigate("/login");
   };
 
   const courseSubjects = [
@@ -49,16 +68,8 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", link: "/" },
     { name: "Nexus Playground", link: "/PlaygroundPage" },
-    {
-      name: "Courses",
-      link: "/Courses",
-      dropdown: courseSubjects,
-    },
-    {
-      name: "Tutorials",
-      link: "#tutorial",
-      dropdown: tutorialTopics,
-    },
+    { name: "Courses", link: "/Courses", dropdown: courseSubjects },
+    { name: "Tutorials", link: "#tutorial", dropdown: tutorialTopics },
     { name: "Community", link: "#community" },
     { name: "Notes", link: "/subjects" },
   ];
@@ -145,7 +156,6 @@ const Navbar = () => {
       `}</style>
 
       <nav id="navbar">
-        {/* Logo */}
         <div className="nav-logo">
           <div className="nav-logo-text">
             <span className="nav-logo-main">ByteNexus</span>
@@ -153,7 +163,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Navigation Links */}
         <ul className="nav-links">
           {navLinks.map((item, index) => (
             <li
@@ -179,11 +188,7 @@ const Navbar = () => {
                   }`}
                 >
                   {item.dropdown.map((sub, i) => (
-                    <Link
-                      key={i}
-                      to={sub.link}
-                      className="dropdown-item"
-                    >
+                    <Link key={i} to={sub.link} className="dropdown-item">
                       {sub.icon} {sub.name}
                     </Link>
                   ))}
@@ -192,22 +197,16 @@ const Navbar = () => {
             </li>
           ))}
 
-          {/* AUTH SECTION */}
-          {user ? (
+          {/* 🔥 AUTH SECTION */}
+          {loading ? (
+            <li><span style={{ color: "#94a3b8" }}>Loading...</span></li>
+          ) : user ? (
             <li>
-              <span
-                style={{
-                  color: "#38bdf8",
-                  marginRight: "10px",
-                }}
-              >
+              <span style={{ color: "#38bdf8", marginRight: "10px" }}>
                 👋 {user.name}
               </span>
 
-              <button
-                className="nav-cta"
-                onClick={handleLogout}
-              >
+              <button className="nav-cta" onClick={handleLogout}>
                 Logout →
               </button>
             </li>
@@ -218,7 +217,6 @@ const Navbar = () => {
                   Sign-up →
                 </Link>
               </li>
-
               <li>
                 <Link to="/Login" className="nav-cta">
                   Login →
