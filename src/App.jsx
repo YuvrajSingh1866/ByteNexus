@@ -18,6 +18,8 @@ import Courses from './pages/Courses'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
+import About from './pages/About'
+import Chatbot from './components/Chatbot'
 function App() {
   const [isMorning, setIsMorning] = useState(false)
 
@@ -118,10 +120,10 @@ function App() {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx*dx + dy*dy);
+          const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 120) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(56, 189, 248, ${0.03 * (1 - dist/120)})`;
+            ctx.strokeStyle = `rgba(56, 189, 248, ${0.03 * (1 - dist / 120)})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -237,18 +239,18 @@ function App() {
     }
 
     // Update SVG logo gradient colors
-    const nightSVG = { s1:'#38bdf8', s2:'#a78bfa', s3:'#22d3ee', r1:'#22d3ee', r2:'#a78bfa', t1:'#38bdf8', t2:'#a78bfa' };
-    const mornSVG  = { s1:'#d97706', s2:'#ea580c', s3:'#f59e0b', r1:'#f59e0b', r2:'#ea580c', t1:'#d97706', t2:'#f59e0b' };
+    const nightSVG = { s1: '#38bdf8', s2: '#a78bfa', s3: '#22d3ee', r1: '#22d3ee', r2: '#a78bfa', t1: '#38bdf8', t2: '#a78bfa' };
+    const mornSVG = { s1: '#d97706', s2: '#ea580c', s3: '#f59e0b', r1: '#f59e0b', r2: '#ea580c', t1: '#d97706', t2: '#f59e0b' };
     const sv = newIsMorning ? mornSVG : nightSVG;
 
-    [['lg1-s1',sv.s1],['lg1-s2',sv.s2],['lg1-s3',sv.s3],
-     ['lg2-s1',sv.r1],['lg2-s2',sv.r2],
-     ['lg3-s1',sv.t1],['lg3-s2',sv.t2],
-     // Footer gradients
-     ['flg1-s1',sv.s1],['flg1-s2',sv.s2],['flg1-s3',sv.s3],
-     ['flg2-s1',sv.r1],['flg2-s2',sv.r2],
-     ['flg3-s1',sv.t1],['flg3-s2',sv.t2]
-    ].forEach(([id,col]) => {
+    [['lg1-s1', sv.s1], ['lg1-s2', sv.s2], ['lg1-s3', sv.s3],
+    ['lg2-s1', sv.r1], ['lg2-s2', sv.r2],
+    ['lg3-s1', sv.t1], ['lg3-s2', sv.t2],
+    // Footer gradients
+    ['flg1-s1', sv.s1], ['flg1-s2', sv.s2], ['flg1-s3', sv.s3],
+    ['flg2-s1', sv.r1], ['flg2-s2', sv.r2],
+    ['flg3-s1', sv.t1], ['flg3-s2', sv.t2]
+    ].forEach(([id, col]) => {
       const el = document.getElementById(id);
       if (el) el.setAttribute('stop-color', col);
     });
@@ -300,32 +302,35 @@ function App() {
       {/* PARTICLES CANVAS */}
       <canvas id="bg-canvas"></canvas>
 
-    <Routes>
-      <Route path="/" element={
-        <>
-          <Navbar />
-          <Hero />
-          <NexusPlayground />
-          <CoursesPage />
-          <StudyMaterial />
-          <Features />
-          <Updates />
-          <Community />
-          <Footer />
-        </>
-      } />
-      <Route path="/subjects" element={<Subjects />} />
-      <Route path="/subject/:name" element={<SubjectDetail />} />
-      <Route path="/PlaygroundPage" element={<PlaygroundPage />} />
-      <Route path="/courses" element={<Courses />} />
-      <Route path='/Signup' element={<Signup />} />
-      <Route path='/Login' element={<Login />} />
-      <Route path="/protected" element={
-        <ProtectedRoute>
-          <PlaygroundPage />
-        </ProtectedRoute>
-      } />
-    </Routes>
+      <Chatbot />
+
+      <Routes>
+        <Route path="/" element={
+          <>
+            <Navbar />
+            <Hero />
+            <NexusPlayground />
+            <CoursesPage />
+            <StudyMaterial />
+            <Features />
+            <Updates />
+            <Community />
+            <Footer />
+          </>
+        } />
+        <Route path="/subjects" element={<Subjects />} />
+        <Route path="/subject/:name" element={<SubjectDetail />} />
+        <Route path="/PlaygroundPage" element={<PlaygroundPage />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path='/Signup' element={<Signup />} />
+        <Route path='/Login' element={<Login />} />
+        <Route path="/protected" element={
+          <ProtectedRoute>
+            <PlaygroundPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/about" element={<About />} />
+      </Routes>
     </div>
   )
 }

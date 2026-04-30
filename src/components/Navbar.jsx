@@ -20,7 +20,7 @@ const Navbar = () => {
 
         const data = await res.json();
 
-        if (res.ok) {
+        if (res.ok) { 
           setUser(data.user);
         } else {
           setUser(null);

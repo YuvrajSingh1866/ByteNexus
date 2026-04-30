@@ -3,7 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 
 const Invite = require("../models/Invite");
-const sendEmail = require("../utils/sendEmail");
+const sendEmail = require("../services/sendEmail");
 const protect = require("../middleware/auth"); // 👈 ADD THIS
 // 🔥 CREATE ROOM + SEND INVITES
 
