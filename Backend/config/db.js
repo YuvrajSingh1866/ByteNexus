@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
-  // maan gandu
- 
+  
   console.log("Attempting to connect to MongoDB...");
 
   try {

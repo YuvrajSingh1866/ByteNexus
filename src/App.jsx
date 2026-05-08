@@ -20,6 +20,7 @@ import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import About from './pages/About'
 import Chatbot from './components/Chatbot'
+import RoomLobby from './pages/RoomLobby'
 function App() {
   const [isMorning, setIsMorning] = useState(false)
 
@@ -329,6 +330,7 @@ function App() {
             <PlaygroundPage />
           </ProtectedRoute>
         } />
+        <Route path='/roomLobby/:roomId' element={<RoomLobby />} />
         <Route path="/about" element={<About />} />
       </Routes>
     </div>
