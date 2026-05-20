@@ -6,7 +6,6 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStoreRaw = require("connect-mongo");
 const MongoStore = MongoStoreRaw.default || MongoStoreRaw;
@@ -14,9 +13,7 @@ const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
-
 const connectDB = require("./config/db");
-
 const app = express();
 
 // set view engine
@@ -47,10 +44,10 @@ app.use(session({
   }
 }));
 
-// routes
+// routes ,end points
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/rooms", protect, roomRoutes);
+app.use("/api/rooms", roomRoutes);
 
 // base route
 app.get("/", (req, res) => {
@@ -73,9 +70,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong" });
 });
 
-const PORT = process.env.PORT || 5000;
+//socket io setup
 
 const server = http.createServer(app);
+
+
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
@@ -118,6 +117,17 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+server.listen(5000, () => {
+  console.log(`🚀 Server running on http://localhost:5000`);
+});
+
+const questions = require("./controllers/questions");
+app.get("/api/questions", (req, res) => {
+  const {topic, difficulty} = req.query;
+  const filtered = questions.find(q => q.topic == topic && q.difficulty == difficulty);
+  if (filtered) {
+    res.json(filtered);
+  } else {
+    res.status(404).json({message: "No question found for the given topic and difficulty"});
+  }
 });

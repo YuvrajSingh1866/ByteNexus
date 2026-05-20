@@ -122,6 +122,7 @@ router.get("/me", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 // ================= ME (Get current user) =================
 router.get("/me", async (req, res) => {
   try {
@@ -142,4 +143,5 @@ router.get("/me", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 module.exports = router;
