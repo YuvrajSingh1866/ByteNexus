@@ -1,48 +1,40 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import "../styles/subjects.css";
 import Footer from "../components/Footer";
+import "../styles/subjects.css";
+
 const Subjects = () => {
   const [subjects, setSubjects] = useState([]);
+  const [secondYearSubjects, setSecondYearSubjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeId, setActiveId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/subjects")
-      .then((res) => res.json())
-      .then((data) => {
-        // ➕ add extra demo subjects
-        const extra = [
-          {
-            id: 5,
-            name: "OOP",
-            resources: {
-              notes: "#",
-              pyqs: "#",
-              practice: "#"
-            }
-          },
-          {
-            id: 6,
-            name: "DSA",
-            resources: {
-              notes: "#",
-              pyqs: "#",
-              practice: "#"
-            }
-          }
-        ];
-
-        setSubjects([...data, ...extra]);
+    Promise.all([
+      fetch("http://localhost:5000/api/subjects/first-year").then((res) => res.json()),
+      fetch("http://localhost:5000/api/subjects/second-year").then((res) => res.json())
+    ])
+      .then(([firstYearData, secondYearData]) => {
+        setSubjects(firstYearData);
+        setSecondYearSubjects(secondYearData);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching subjects:", err);
+        setLoading(false);
       });
   }, []);
 
-  const filteredSubjects =
-    searchTerm.trim() === ""
-      ? subjects
-      : subjects.filter((sub) =>
-          sub.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+  const filteredFirstYearSubjects = subjects.filter((sub) =>
+    sub.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  const filteredSecondYearSubjects = secondYearSubjects.filter((sub) =>
+    sub.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalResults = filteredFirstYearSubjects.length + filteredSecondYearSubjects.length;
 
   return (
     <>
@@ -50,55 +42,104 @@ const Subjects = () => {
 
       <main className="subjects-page">
         <div className="page-hero">
+          <div className="page-breadcrumb">
+            <span>ByteNexus</span>
+            <span className="sep">/</span>
+            <span>Academic</span>
+            <span className="sep">/</span>
+            <span style={{ color: 'var(--text-primary)' }}>Subjects</span>
+          </div>
+
           <h1 className="page-title">
             <span className="highlight">Subjects</span>
           </h1>
+          <p className="page-subtitle">Browse and search through our comprehensive collection of first-year academic resources</p>
 
-          <p className="page-subtitle">
-            Search and access subject resources
-          </p>
-        </div>
-
-        {/* SEARCH */}
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search subject..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        {/* GRID */}
-        <div className="subjects-grid">
-          {filteredSubjects.map((sub) => (
-            <div
-              key={sub.id}
-              className={`subject-card ${
-                activeId === sub.id ? "active" : ""
-              }`}
-              onClick={() =>
-                setActiveId(activeId === sub.id ? null : sub.id)
-              }
-            >
-              <div className="subject-name">{sub.name}</div>
-
-              <div className="subject-desc">
-                Click to explore resources
-              </div>
-
-              {/* EXPAND INSIDE CARD */}
-              {activeId === sub.id && sub.resources && (
-                <div className="card-resources">
-                  <a href={sub.resources.notes} target="_blank">📘 Notes</a>
-                  <a href={sub.resources.pyqs} target="_blank">📝 PYQs</a>
-                  <a href={sub.resources.practice} target="_blank">💻 Practice</a>
-                </div>
-              )}
+          <div className="search-wrap">
+            <div className="search-box">
+              <span className="search-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="Search subjects…"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-          ))}
+            <p className="result-count">Showing <strong>{totalResults}</strong> subjects</p>
+          </div>
+        </div>
+
+        <div className="page-divider"></div>
+
+        <div className="subjects-content">
+          <div className="year-section">
+            <div className="year-header">
+              <h2 className="year-heading">1st Year</h2>
+              <span className="year-badge">● {subjects.length} subjects</span>
+              <div className="year-line"></div>
+            </div>
+
+            {loading ? (
+              <div className="loading-spinner"></div>
+            ) : (
+              <div className="subjects-grid">
+                {filteredFirstYearSubjects.map((sub) => (
+                  <Link
+                    key={sub._id}
+                    to={`/subject/${sub.slug}`}
+                    state={{ type: "first-year" }}
+                    className="subject-card"
+                  >
+                    <div className="subject-icon-box">📘</div>
+                    <div className="subject-info">
+                      <div className="subject-name">{sub.name}</div>
+                      <div className="subject-year-tag">CSE – 1st Year</div>
+                    </div>
+                    <div className="subject-link">View Page <span className="arrow">→</span></div>
+                  </Link>
+                ))}
+                {filteredFirstYearSubjects.length === 0 && (
+                  <div style={{ color: 'var(--text-secondary)' }}>No subjects found matching your search.</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="year-section" style={{ marginTop: '40px' }}>
+            <div className="year-header">
+              <h2 className="year-heading">CSE 2nd Year</h2>
+              <span className="year-badge">● {secondYearSubjects.length} subjects</span>
+              <div className="year-line"></div>
+            </div>
+
+            {loading ? (
+              <div className="loading-spinner"></div>
+            ) : (
+              <div className="subjects-grid">
+                {filteredSecondYearSubjects.map((sub) => (
+                  <Link
+                    key={sub._id}
+                    to={`/subject/${sub.slug}`}
+                    state={{ type: "second-year" }}
+                    className="subject-card"
+                  >
+                    <div className="subject-icon-box">📘</div>
+                    <div className="subject-info">
+                      <div className="subject-name">{sub.name}</div>
+                      <div className="subject-year-tag">CSE – 2nd Year</div>
+                    </div>
+                    <div className="subject-link">View Page <span className="arrow">→</span></div>
+                  </Link>
+                ))}
+                {filteredSecondYearSubjects.length === 0 && (
+                  <div style={{ color: 'var(--text-secondary)' }}>No subjects found matching your search.</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </main>
+
       <Footer />
     </>
   );

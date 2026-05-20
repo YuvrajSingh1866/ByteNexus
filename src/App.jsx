@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
+import { useTheme } from './context/ThemeContext'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import VideoCard from './components/VideoCard'
@@ -20,8 +21,9 @@ import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import About from './pages/About'
 import Chatbot from './components/Chatbot'
+
 function App() {
-  const [isMorning, setIsMorning] = useState(false)
+  const { isLight } = useTheme();
 
   useEffect(() => {
     // Custom cursor setup
@@ -76,6 +78,7 @@ function App() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let particles = [];
+    let animationFrameId;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -92,7 +95,7 @@ function App() {
         this.speedX = (Math.random() - 0.5) * 0.3;
         this.speedY = (Math.random() - 0.5) * 0.3;
         this.opacity = Math.random() * 0.4 + 0.1;
-        this.color = isMorning ? morningColors[Math.floor(Math.random() * morningColors.length)] : nightColors[Math.floor(Math.random() * nightColors.length)];
+        this.color = isLight ? lightColors[Math.floor(Math.random() * lightColors.length)] : darkColors[Math.floor(Math.random() * darkColors.length)];
       }
       update() {
         this.x += this.speedX;
@@ -110,8 +113,8 @@ function App() {
       }
     }
 
-    const nightColors = ['#38bdf8', '#a78bfa', '#22d3ee', '#4ade80'];
-    const morningColors = ['#f59e0b', '#fb923c', '#fcd34d', '#ea580c'];
+    const darkColors = ['#38bdf8', '#a78bfa', '#22d3ee', '#4ade80'];
+    const lightColors = ['#ea580c', '#f59e0b', '#fb7185', '#fb923c'];
 
     for (let i = 0; i < 120; i++) particles.push(new Particle());
 
@@ -123,7 +126,7 @@ function App() {
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 120) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(56, 189, 248, ${0.03 * (1 - dist / 120)})`;
+            ctx.strokeStyle = isLight ? `rgba(245, 158, 11, ${0.05 * (1 - dist / 120)})` : `rgba(56, 189, 248, ${0.03 * (1 - dist / 120)})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -137,14 +140,15 @@ function App() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => { p.update(); p.draw(); });
       drawConnections();
-      requestAnimationFrame(animateParticles);
+      animationFrameId = requestAnimationFrame(animateParticles);
     }
     animateParticles();
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [isMorning]);
+  }, [isLight]);
 
   useEffect(() => {
     // Scroll reveal
@@ -211,84 +215,8 @@ function App() {
     };
   }, []);
 
-  const toggleTheme = () => {
-    const newIsMorning = !isMorning;
-    setIsMorning(newIsMorning);
-
-    // Flash effect
-    const modeFlash = document.getElementById('mode-flash');
-    modeFlash.style.background = newIsMorning
-      ? 'radial-gradient(circle at center, rgba(253,211,77,0.5), rgba(251,146,60,0.25))'
-      : 'radial-gradient(circle at center, rgba(2,6,23,0.6), rgba(15,23,42,0.3))';
-    modeFlash.classList.add('flash');
-    setTimeout(() => {
-      modeFlash.style.transition = 'opacity 0.6s ease';
-      modeFlash.style.opacity = '0';
-      setTimeout(() => {
-        modeFlash.classList.remove('flash');
-        modeFlash.style.opacity = '';
-        modeFlash.style.transition = '';
-      }, 600);
-    }, 80);
-
-    // Toggle class
-    if (newIsMorning) {
-      document.documentElement.classList.add('morning');
-    } else {
-      document.documentElement.classList.remove('morning');
-    }
-
-    // Update SVG logo gradient colors
-    const nightSVG = { s1: '#38bdf8', s2: '#a78bfa', s3: '#22d3ee', r1: '#22d3ee', r2: '#a78bfa', t1: '#38bdf8', t2: '#a78bfa' };
-    const mornSVG = { s1: '#d97706', s2: '#ea580c', s3: '#f59e0b', r1: '#f59e0b', r2: '#ea580c', t1: '#d97706', t2: '#f59e0b' };
-    const sv = newIsMorning ? mornSVG : nightSVG;
-
-    [['lg1-s1', sv.s1], ['lg1-s2', sv.s2], ['lg1-s3', sv.s3],
-    ['lg2-s1', sv.r1], ['lg2-s2', sv.r2],
-    ['lg3-s1', sv.t1], ['lg3-s2', sv.t2],
-    // Footer gradients
-    ['flg1-s1', sv.s1], ['flg1-s2', sv.s2], ['flg1-s3', sv.s3],
-    ['flg2-s1', sv.r1], ['flg2-s2', sv.r2],
-    ['flg3-s1', sv.t1], ['flg3-s2', sv.t2]
-    ].forEach(([id, col]) => {
-      const el = document.getElementById(id);
-      if (el) el.setAttribute('stop-color', col);
-    });
-  };
-
-  // Theme label functionality
-  const [labelTimeout, setLabelTimeout] = useState(null);
-
-  const showLabel = () => {
-    clearTimeout(labelTimeout);
-    const label = document.getElementById('theme-label');
-    label.textContent = isMorning ? '🌙 Switch to Night' : '☀️ Switch to Morning';
-    label.classList.add('show');
-    const timeout = setTimeout(() => label.classList.remove('show'), 2000);
-    setLabelTimeout(timeout);
-  };
-
-  const handleToggleMouseEnter = () => {
-    showLabel();
-  };
-
-  const handleToggleMouseLeave = () => {
-    clearTimeout(labelTimeout);
-    document.getElementById('theme-label').classList.remove('show');
-  };
-
   return (
-    <div className={`app ${isMorning ? 'morning' : ''}`}>
-      {/* MODE FLASH OVERLAY */}
-      <div id="mode-flash"></div>
-
-      {/* THEME TOGGLE */}
-      <button id="theme-toggle" title="Switch theme" aria-label="Toggle morning/night mode" onClick={toggleTheme} onMouseEnter={handleToggleMouseEnter} onMouseLeave={handleToggleMouseLeave}>
-        <span className="toggle-icon" id="toggle-icon">{isMorning ? '☀️' : '🌙'}</span>
-      </button>
-      <div id="theme-label">Morning Mode</div>
-
-
+    <div className="app">
       {/* CURSOR */}
       <div id="cursor"></div>
       <div id="cursor-ring"></div>
