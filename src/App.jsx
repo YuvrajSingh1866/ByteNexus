@@ -22,6 +22,11 @@ import ProtectedRoute from './components/ProtectedRoute'
 import About from './pages/About'
 import Chatbot from './components/Chatbot'
 import RoomLobby from './pages/RoomLobby'
+
+
+
+
+
 function App() {
   const { isLight } = useTheme();
 

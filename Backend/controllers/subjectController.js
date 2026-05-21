@@ -1,5 +1,4 @@
-const FirstYearSubject = require("../models/FirstYearSubject");
-const SecondYearSubject = require("../models/SecondYearSubject");
+const { prisma } = require("../config/db");
 
 const subjects = [
   {
@@ -40,6 +39,22 @@ const subjects = [
   }
 ];
 
+const mapSubjectResponse = (subject) => {
+  if (!subject) return null;
+  const { notes, pyqs, cho, assignments, importantQuestions, videoResources, ...rest } = subject;
+  return {
+    ...rest,
+    resources: {
+      notes: notes || [],
+      pyqs: pyqs || [],
+      cho: cho || [],
+      assignments: assignments || [],
+      importantQuestions: importantQuestions || [],
+      videoResources: videoResources || []
+    }
+  };
+};
+
 // 🔹 GET all subjects
 const getSubjects = (req, res) => {
   res.json(subjects);
@@ -48,8 +63,10 @@ const getSubjects = (req, res) => {
 // 🔹 GET all First Year Subjects from DB
 const getFirstYearSubjects = async (req, res) => {
   try {
-    const subjects = await FirstYearSubject.find().sort({ createdAt: -1 });
-    res.json(subjects);
+    const subjects = await prisma.firstYearSubject.findMany({
+      orderBy: { createdAt: "desc" }
+    });
+    res.json(subjects.map(mapSubjectResponse));
   } catch (error) {
     console.error("Error fetching first year subjects:", error);
     res.status(500).json({ message: "Server error" });
@@ -59,11 +76,13 @@ const getFirstYearSubjects = async (req, res) => {
 // 🔹 GET specific First Year Subject by slug
 const getFirstYearSubjectBySlug = async (req, res) => {
   try {
-    const subject = await FirstYearSubject.findOne({ slug: req.params.slug });
+    const subject = await prisma.firstYearSubject.findUnique({
+      where: { slug: req.params.slug }
+    });
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }
-    res.json(subject);
+    res.json(mapSubjectResponse(subject));
   } catch (error) {
     console.error("Error fetching subject:", error);
     res.status(500).json({ message: "Server error" });
@@ -73,8 +92,10 @@ const getFirstYearSubjectBySlug = async (req, res) => {
 // 🔹 GET all Second Year Subjects from DB
 const getSecondYearSubjects = async (req, res) => {
   try {
-    const subjects = await SecondYearSubject.find().sort({ createdAt: -1 });
-    res.json(subjects);
+    const subjects = await prisma.secondYearSubject.findMany({
+      orderBy: { createdAt: "desc" }
+    });
+    res.json(subjects.map(mapSubjectResponse));
   } catch (error) {
     console.error("Error fetching second year subjects:", error);
     res.status(500).json({ message: "Server error" });
@@ -84,11 +105,13 @@ const getSecondYearSubjects = async (req, res) => {
 // 🔹 GET specific Second Year Subject by slug
 const getSecondYearSubjectBySlug = async (req, res) => {
   try {
-    const subject = await SecondYearSubject.findOne({ slug: req.params.slug });
+    const subject = await prisma.secondYearSubject.findUnique({
+      where: { slug: req.params.slug }
+    });
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }
-    res.json(subject);
+    res.json(mapSubjectResponse(subject));
   } catch (error) {
     console.error("Error fetching subject:", error);
     res.status(500).json({ message: "Server error" });

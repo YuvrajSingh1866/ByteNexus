@@ -13,7 +13,7 @@ const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
-const connectDB = require("./config/db");
+const { connectDB } = require("./config/db");
 const app = express();
 
 // set view engine

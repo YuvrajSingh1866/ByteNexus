@@ -1,13 +1,10 @@
 require("dotenv").config();
-const mongoose = require("mongoose");
-const FirstYearSubject = require("./models/FirstYearSubject");
-
-const MONGODB_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bytenexus";
+const { prisma } = require("./config/db");
 
 const generateDummyResource = (title, type) => {
   const isVideo = type === "video";
   return {
-    title: title,
+    title,
     link: isVideo ? "https://www.youtube.com/watch?v=dQw4w9WgXcQ" : "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
     type: isVideo ? "video" : "pdf"
   };
@@ -120,19 +117,50 @@ const subjectsData = [
   }
 ];
 
+const mapSubjectData = (subject) => ({
+  name: subject.name,
+  slug: subject.slug,
+  description: subject.description,
+  notes: subject.resources.notes,
+  pyqs: subject.resources.pyqs,
+  cho: subject.resources.cho,
+  assignments: subject.resources.assignments,
+  importantQuestions: subject.resources.importantQuestions,
+  videoResources: subject.resources.videoResources
+});
+
+const createFirstYearSubject = async (subject) => {
+  try {
+    await prisma.firstYearSubject.create({ data: mapSubjectData(subject) });
+  } catch (err) {
+    if (err.code === "P2031") {
+      await prisma.$runCommandRaw({
+        insert: "FirstYearSubject",
+        documents: [{
+          ...mapSubjectData(subject),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }]
+      });
+      return;
+    }
+    throw err;
+  }
+};
+
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log("Connected to MongoDB...");
+    await prisma.$connect();
+    console.log("Connected to database...");
 
-    // Clear existing
-    await FirstYearSubject.deleteMany();
+    await prisma.firstYearSubject.deleteMany();
     console.log("Cleared existing first year subjects...");
 
-    // Insert new
-    await FirstYearSubject.insertMany(subjectsData);
-    console.log("Successfully seeded first year subjects!");
+    for (const subject of subjectsData) {
+      await createFirstYearSubject(subject);
+    }
 
+    console.log("Successfully seeded first year subjects!");
     process.exit(0);
   } catch (error) {
     console.error("Error seeding database:", error);

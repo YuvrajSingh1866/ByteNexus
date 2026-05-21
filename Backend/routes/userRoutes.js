@@ -1,7 +1,39 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const { ObjectId } = require("bson");
+const { prisma } = require("../config/db");
+
+const createUser = async (data) => {
+  try {
+    return await prisma.user.create({ data });
+  } catch (err) {
+    if (err.code === "P2031") {
+      const id = new ObjectId();
+      const now = new Date();
+
+      await prisma.$runCommandRaw({
+        insert: "User",
+        documents: [{
+          _id: id,
+          ...data,
+          createdAt: { $date: now.toISOString() },
+          updatedAt: { $date: now.toISOString() }
+        }]
+      });
+
+      return {
+        id: id.toString(),
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        createdAt: now,
+        updatedAt: now
+      };
+    }
+    throw err;
+  }
+};
 
 // ================= SIGNUP =================
 router.post("/signup", async (req, res) => {
@@ -12,28 +44,26 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({
+    const user = await createUser({
       name,
       email,
       password: hashedPassword
     });
 
-    await user.save();
-
     // 🔥 Store session
-    req.session.userId = user._id;
+    req.session.userId = user.id;
 
     res.status(201).json({
       message: "Signup successful 🎉",
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email
       }
@@ -55,7 +85,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = await User.findOne({ email });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
@@ -67,12 +97,12 @@ router.post("/login", async (req, res) => {
     }
 
     // 🔥 Store session
-    req.session.userId = user._id;
+    req.session.userId = user.id;
 
     res.status(200).json({
       message: "Login successful 🎉",
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email
       }
@@ -94,7 +124,7 @@ router.post("/logout", (req, res) => {
     }
 
     res.clearCookie("connect.sid", {
-      path: "/",   // 🔥 important
+      path: "/",
     });
 
     res.status(200).json({ message: "Logout successful 🎉" });
@@ -109,28 +139,10 @@ router.get("/me", async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const user = await User.findById(req.session.userId).select("-password");
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({ user });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// ================= ME (Get current user) =================
-router.get("/me", async (req, res) => {
-  try {
-    if (!req.session.userId) {
-      return res.status(401).json({ message: "Not logged in" });
-    }
-
-    const user = await User.findById(req.session.userId).select("-password");
+    const user = await prisma.user.findUnique({
+      where: { id: req.session.userId },
+      select: { id: true, name: true, email: true }
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
