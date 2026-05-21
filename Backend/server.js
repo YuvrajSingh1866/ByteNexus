@@ -26,10 +26,13 @@ connectDB();
 // middleware
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+  ],
   credentials: true
 }));
-
 app.use(session({
   secret: process.env.SESSION_SECRET || "default_super_secret_key",
   resave: false,
@@ -38,10 +41,12 @@ app.use(session({
     mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bytenexus"
   }),
   cookie: {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax"
-  }
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production"
+    ? "none"
+    : "lax"
+}
 }));
 
 // routes ,end points
@@ -77,11 +82,15 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
-    methods: ["GET", "POST"]
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      process.env.FRONTEND_URL
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
-
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
 const aiModel = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
