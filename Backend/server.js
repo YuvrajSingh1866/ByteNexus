@@ -34,22 +34,27 @@ app.use(cors({
   ],
   credentials: true
 }));
+app.set("trust proxy", 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "default_super_secret_key",
+
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bytenexus"
-  }),
-  cookie: {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production"
-    ? "none"
-    : "lax"
-}
-}));
 
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI
+  }),
+
+  cookie: {
+    httpOnly: true,
+
+    secure: true,      // Render + HTTPS
+    sameSite: "none",  // cross-site cookies
+
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
+}));
 // routes ,end points
 app.use("/api/subjects", subjectRoutes);
 app.use("/api/users", userRoutes);

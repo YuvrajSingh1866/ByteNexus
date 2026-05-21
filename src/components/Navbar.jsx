@@ -69,46 +69,116 @@ const Navbar = () => {
   const { isLight, toggleTheme } = useTheme();
 
   // ✅ SESSION USER STATE
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  // ✅ SESSION USER STATE
+const [user, setUser] = useState(null);
+const [loading, setLoading] = useState(true);
 
-  // ✅ GET USER FROM SESSION (/me)
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/me`, {
-          credentials: "include", // 🔥 REQUIRED
-        });
+const navigate = useNavigate();
 
-        const data = await res.json();
 
-        if (res.ok) { 
-          setUser(data.user);
-        } else {
-          setUser(null);
+// ✅ GET CURRENT USER
+useEffect(() => {
+
+  const fetchUser = async () => {
+
+    try {
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/me`,
+        {
+          credentials: "include"
         }
-      } catch (err) {
-        console.error(err);
+      );
+
+      const contentType =
+        res.headers.get("content-type");
+
+      // Prevent HTML response crash
+      if (
+        !contentType ||
+        !contentType.includes(
+          "application/json"
+        )
+      ) {
+
+        console.log(
+          "Non JSON response"
+        );
+
         setUser(null);
-      } finally {
-        setLoading(false);
+        return;
       }
-    };
 
-    fetchUser();
-  }, []);
+      const data =
+        await res.json();
 
-  // ✅ LOGOUT (SESSION)
-  const handleLogout = async () => {
-    await fetch(`${import.meta.env.VITE_API_URL}/api/users/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
+      if (
+        res.ok &&
+        data.user
+      ) {
 
-    setUser(null);
-    navigate("/login");
+        setUser(
+          data.user
+        );
+
+      } else {
+
+        setUser(null);
+
+      }
+
+    } catch(err){
+
+      console.log(
+        "User fetch error:",
+        err
+      );
+
+      setUser(null);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
   };
+
+  fetchUser();
+
+}, []);
+
+
+// ✅ LOGOUT
+const handleLogout = async () => {
+
+  try {
+
+    await fetch(
+      `${import.meta.env.VITE_API_URL}/api/users/logout`,
+      {
+        method:"POST",
+        credentials:"include"
+      }
+    );
+
+  } catch(err){
+
+    console.log(err);
+
+  }
+
+  setUser(null);
+
+  localStorage.removeItem(
+    "user"
+  );
+
+  navigate("/login");
+
+  window.location.reload();
+
+};
 
   const courseSubjects = [
     { name: "Web Development", icon: "🌐", link: "/courses/web-dev" },
