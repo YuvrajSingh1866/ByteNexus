@@ -12,8 +12,8 @@ const Subjects = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch("import.meta.env.VITE_API_URL/api/subjects/first-year").then((res) => res.json()),
-      fetch("import.meta.env.VITE_API_URL/api/subjects/second-year").then((res) => res.json())
+      fetch(`${import.meta.env.VITE_API_URL}/api/subjects/first-year`).then((res) => res.json()),
+      fetch(`${import.meta.env.VITE_API_URL}/api/subjects/second-year`).then((res) => res.json())
     ])
       .then(([firstYearData, secondYearData]) => {
         setSubjects(firstYearData);

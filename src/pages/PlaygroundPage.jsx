@@ -40,7 +40,7 @@ const CreateRoomModal = ({ onClose }) => {
     return
   }
 
-  const res = await fetch("import.meta.env.VITE_API_URL/api/rooms/create", {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/rooms/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

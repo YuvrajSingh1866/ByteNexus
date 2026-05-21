@@ -202,7 +202,7 @@
 [32m+[m[32m        token[m
        });[m
  [m
-[31m-      const link = `import.meta.env.VITE_API_URL/api/rooms/accept/${token}`;[m
+[31m-      const link = `${import.meta.env.VITE_API_URL}/api/rooms/accept/${token}`;[m
 [32m+[m[32m      if (!invite) {[m
  [m
 [31m-      await sendEmail(email, link);[m
