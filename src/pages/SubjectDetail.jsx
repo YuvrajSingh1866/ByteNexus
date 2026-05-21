@@ -91,15 +91,15 @@ const SubjectDetail = () => {
             return;
           }
         }
-        const resFirst = await fetch(`${import.meta.env.VITE_API_URL}/api/subjects/first-year/${slug}`);
+        const resFirst = await fetch(`${import.meta.env.VITE_API_URL} /api/subjects/first-year/${slug}`);
         if (resFirst.ok) {
           setSubject(await resFirst.json());
           setLoading(false);
           return;
         }
-        const resSecond = await fetch(`${import.meta.env.VITE_API_URL}/api/subjects/second-year/${slug}`);
+        const resSecond = await fetch(`${import.meta.env.VITE_API_URL}/  api/subjects/second-year/${slug}`);
         if (resSecond.ok) {
-          setSubject(await resSecond.json());
+          setSubject(await resSecond.json()); 
           setLoading(false);
           return;
         }

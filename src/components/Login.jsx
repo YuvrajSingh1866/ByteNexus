@@ -31,15 +31,15 @@ const Login = () => {
       console.log(import.meta.env);
 console.log("API URL:", import.meta.env.VITE_API_URL);
       const res = await fetch(
- "https://bytenexus-g6sa.onrender.com/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-
-        body: JSON.stringify(formData)
-      });
+ `${import.meta.env.VITE_API_URL}/api/users/login`,
+ {
+   method:"POST",
+   headers:{
+     "Content-Type":"application/json"
+   },
+   credentials:"include",
+   body: JSON.stringify(formData)
+ });
 
       const data = await res.json();
 

@@ -1,9 +1,8 @@
 const Room = require("../models/Room");
-
 const { v4: uuidv4 } = require("uuid");
 
-const User = require("../models/User");
-// CREATE ROOM
+
+// ================= CREATE ROOM =================
 const createRoom = async (req, res) => {
 
   try {
@@ -51,7 +50,7 @@ const createRoom = async (req, res) => {
 };
 
 
-// GET ROOM
+// ================= GET ROOM =================
 const getRoom = async (req, res) => {
 
   try {
@@ -73,9 +72,9 @@ const getRoom = async (req, res) => {
 
     res.json(room);
 
-  } catch (error) {
+  } catch (err) {
 
-    console.log(error);
+    console.log(err);
 
     res.status(500).json({
       message: "Server Error"
@@ -84,7 +83,9 @@ const getRoom = async (req, res) => {
   }
 
 };
-// JOIN ROOM
+
+
+// ================= JOIN ROOM =================
 const joinRoom = async (req, res) => {
 
   try {
@@ -101,38 +102,36 @@ const joinRoom = async (req, res) => {
 
     }
 
-    // already joined?
-    const alreadyJoined =
-      room.participants.find(
-        (p) =>
-          p.user.toString() ===
-          req.session.userId
-      );
+    const alreadyJoined = room.participants.find(
+
+      (p) =>
+      p.user.toString() ===
+      req.session.userId
+
+    );
 
     if (!alreadyJoined) {
 
       room.participants.push({
 
         user: req.session.userId,
-
         ready: false,
-
         preferredLanguage:
-          room.settings.language
+        room.settings.language
 
       });
 
       await room.save();
 
     }
-    console.log(room.participants);
+
     res.json({
       success: true
     });
-    
-  } catch (error) {
 
-    console.log(error);
+  } catch (err) {
+
+    console.log(err);
 
     res.status(500).json({
       message: "Join room failed"
