@@ -28,7 +28,10 @@ const Login = () => {
     setMessage("");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/login`, {
+      console.log(import.meta.env);
+console.log("API URL:", import.meta.env.VITE_API_URL);
+      const res = await fetch(
+ "https://bytenexus-g6sa.onrender.com/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
