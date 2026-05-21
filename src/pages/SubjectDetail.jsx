@@ -84,20 +84,20 @@ const SubjectDetail = () => {
       const type = location.state?.type;
       try {
         if (type) {
-          const res = await fetch(`http://localhost:5000/api/subjects/${type}/${slug}`);
+          const res = await fetch(`import.meta.env.VITE_API_URL/api/subjects/${type}/${slug}`);
           if (res.ok) {
             setSubject(await res.json());
             setLoading(false);
             return;
           }
         }
-        const resFirst = await fetch(`http://localhost:5000/api/subjects/first-year/${slug}`);
+        const resFirst = await fetch(`import.meta.env.VITE_API_URL/api/subjects/first-year/${slug}`);
         if (resFirst.ok) {
           setSubject(await resFirst.json());
           setLoading(false);
           return;
         }
-        const resSecond = await fetch(`http://localhost:5000/api/subjects/second-year/${slug}`);
+        const resSecond = await fetch(`import.meta.env.VITE_API_URL/api/subjects/second-year/${slug}`);
         if (resSecond.ok) {
           setSubject(await resSecond.json());
           setLoading(false);

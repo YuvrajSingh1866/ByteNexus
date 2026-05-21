@@ -29,7 +29,7 @@ router.post("/create", protect, async (req, res) => {
         difficulty
       });
 
-      const link = `http://localhost:5000/api/rooms/accept/${token}`;
+      const link = `${process.env.BACKEND_URL}/api/rooms/accept/${token}`;
 
       await sendEmail(email, link);
     }
@@ -56,7 +56,7 @@ router.get("/accept/:token", async (req, res) => {
     await invite.save();
 
     // 👉 redirect to frontend
-    res.redirect(`http://localhost:5173/roomLobby/${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/roomLobby/${token}`);
 
   } catch (err) {
     res.status(500).send("Server error");

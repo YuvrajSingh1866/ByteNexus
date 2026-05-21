@@ -127,7 +127,7 @@ io.on("connection", (socket) => {
 });
 
 server.listen(5000, () => {
-  console.log(`🚀 Server running on http://localhost:5000`);
+  console.log(`🚀 Server running on import.meta.env.VITE_API_URL`);
 });
 
 const questions = require("./controllers/questions");

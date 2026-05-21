@@ -202,7 +202,7 @@
 [32m+[m[32m        token[m
        });[m
  [m
-[31m-      const link = `http://localhost:5000/api/rooms/accept/${token}`;[m
+[31m-      const link = `import.meta.env.VITE_API_URL/api/rooms/accept/${token}`;[m
 [32m+[m[32m      if (!invite) {[m
  [m
 [31m-      await sendEmail(email, link);[m
@@ -501,7 +501,7 @@
  import { io } from 'socket.io-client';[m
  import './Chatbot.css';[m
  [m
-[31m-const socket = io('http://localhost:5000');[m
+[31m-const socket = io('import.meta.env.VITE_API_URL');[m
 [32m+[m[32mconst socket = io([m
 [32m+[m[32m  import.meta.env.VITE_API_URL,[m
 [32m+[m[32m  { withCredentials: true }[m
@@ -517,7 +517,7 @@
      setMessage("");[m
  [m
      try {[m
-[31m-      const res = await fetch("http://localhost:5000/api/users/login", {[m
+[31m-      const res = await fetch("import.meta.env.VITE_API_URL/api/users/login", {[m
 [32m+[m[32m      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/me`, {[m
          method: "POST",[m
          headers: {[m
@@ -617,7 +617,7 @@
 [31m-    return[m
 [31m-  }[m
  [m
-[31m-  const res = await fetch("http://localhost:5000/api/rooms/create", {[m
+[31m-  const res = await fetch("import.meta.env.VITE_API_URL/api/rooms/create", {[m
 [31m-    method: "POST",[m
 [31m-    headers: {[m
 [31m-      "Content-Type": "application/json"[m
