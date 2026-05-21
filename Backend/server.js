@@ -126,9 +126,13 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log(`🚀 Server running on import.meta.env.VITE_API_URL`);
-});
+if (require.main === module) {
+  server.listen(5000, () => {
+    console.log(`🚀 Server running on import.meta.env.VITE_API_URL`);
+  });
+}
+
+module.exports = { app, server };
 
 const questions = require("./controllers/questions");
 app.get("/api/questions", (req, res) => {

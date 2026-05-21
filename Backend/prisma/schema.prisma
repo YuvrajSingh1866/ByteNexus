@@ -3,18 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-type Resource {
-  title String
-  link  String
-  type  String
-}
-
 model User {
-  id        String   @id @map("_id") @default(auto()) @db.ObjectId
+  id        String   @id @default(uuid()) @db.Uuid
   name      String
   email     String   @unique
   password  String
@@ -25,41 +18,41 @@ model User {
 }
 
 model FirstYearSubject {
-  id                 String    @id @map("_id") @default(auto()) @db.ObjectId
+  id                 String    @id @default(uuid()) @db.Uuid
   name               String    @unique
   slug               String    @unique
   description        String    @default("Explore resources for this subject.")
-  notes              Resource[]
-  pyqs               Resource[]
-  cho                Resource[]
-  assignments        Resource[]
-  importantQuestions Resource[]
-  videoResources     Resource[]
+  notes              Json
+  pyqs               Json
+  cho                Json
+  assignments        Json
+  importantQuestions Json
+  videoResources     Json
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
 
 model SecondYearSubject {
-  id                 String    @id @map("_id") @default(auto()) @db.ObjectId
+  id                 String    @id @default(uuid()) @db.Uuid
   name               String    @unique
   slug               String    @unique
   description        String    @default("Explore resources for this subject.")
-  notes              Resource[]
-  pyqs               Resource[]
-  cho                Resource[]
-  assignments        Resource[]
-  importantQuestions Resource[]
-  videoResources     Resource[]
+  notes              Json
+  pyqs               Json
+  cho                Json
+  assignments        Json
+  importantQuestions Json
+  videoResources     Json
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
 
 model Invite {
-  id         String   @id @map("_id") @default(auto()) @db.ObjectId
+  id         String   @id @default(uuid()) @db.Uuid
   email      String
   token      String   @unique
   status     String   @default("pending")
-  senderId   String?  @db.ObjectId
+  senderId   String?  @db.Uuid
   topic      String?
   difficulty String?
   sender     User?    @relation(fields: [senderId], references: [id], name: "UserInvites")
@@ -68,11 +61,11 @@ model Invite {
 }
 
 model Room {
-  id          String   @id @map("_id") @default(auto()) @db.ObjectId
+  id          String   @id @default(uuid()) @db.Uuid
   roomId      String   @unique
   topic       String?
   difficulty  String?
-  createdById String?  @db.ObjectId
+  createdById String?  @db.Uuid
   createdBy   User?    @relation(fields: [createdById], references: [id], name: "UserRooms")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
