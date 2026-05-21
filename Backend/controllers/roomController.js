@@ -1,149 +1,124 @@
-const Room = require("../models/Room");
-const { v4: uuidv4 } = require("uuid");
+const FirstYearSubject = require("../models/FirstYearSubject");
+const SecondYearSubject = require("../models/SecondYearSubject");
 
+const mapSubjectResponse = (subject) => {
+  if (!subject) return null;
 
-// ================= CREATE ROOM =================
-const createRoom = async (req, res) => {
-
-  try {
-
-    const roomId = uuidv4();
-
-    const room = await Room.create({
-
-      roomId,
-
-      createdBy: req.session.userId,
-
-      participants: [
-        {
-          user: req.session.userId,
-          ready: false,
-          preferredLanguage: "Java"
-        }
-      ],
-
-      settings: {
-        language: "Java",
-        timeLimit: 20,
-        topics: ["Arrays", "Trees"],
-        difficulty: "Medium"
-      }
-
-    });
-
-    res.json({
-      success: true,
-      roomId: room.roomId
-    });
-
-  } catch (err) {
-
-    console.log(err);
-
-    res.status(500).json({
-      message: "Room creation failed"
-    });
-
-  }
-
+  return {
+    ...subject._doc,
+    resources: {
+      notes: subject.notes || [],
+      pyqs: subject.pyqs || [],
+      cho: subject.cho || [],
+      assignments: subject.assignments || [],
+      importantQuestions: subject.importantQuestions || [],
+      videoResources: subject.videoResources || []
+    }
+  };
 };
 
-
-// ================= GET ROOM =================
-const getRoom = async (req, res) => {
-
+// GET all subjects
+const getSubjects = async (req, res) => {
   try {
+    const first = await FirstYearSubject.find();
+    const second = await SecondYearSubject.find();
 
-    const room = await Room.findOne({
-      roomId: req.params.roomId
-    })
+    res.json([
+      ...first.map(mapSubjectResponse),
+      ...second.map(mapSubjectResponse)
+    ]);
+  } catch (error) {
+    console.log(error);
 
-    .populate("participants.user", "name")
-    .populate("createdBy", "name");
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
+};
 
-    if (!room) {
+// GET first year subjects
+const getFirstYearSubjects = async (req, res) => {
+  try {
+    const subjects = await FirstYearSubject.find();
 
+    res.json(subjects.map(mapSubjectResponse));
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
+};
+
+// GET first year subject by slug
+const getFirstYearSubjectBySlug = async (req, res) => {
+  try {
+    const subject = await FirstYearSubject.findOne({
+      slug: req.params.slug
+    });
+
+    if (!subject) {
       return res.status(404).json({
-        message: "Room not found"
+        message: "Subject not found"
       });
-
     }
 
-    res.json(room);
+    res.json(mapSubjectResponse(subject));
 
-  } catch (err) {
-
-    console.log(err);
+  } catch (error) {
+    console.log(error);
 
     res.status(500).json({
-      message: "Server Error"
+      message: "Server error"
     });
-
   }
-
 };
 
-
-// ================= JOIN ROOM =================
-const joinRoom = async (req, res) => {
-
+// GET second year subjects
+const getSecondYearSubjects = async (req, res) => {
   try {
+    const subjects = await SecondYearSubject.find();
 
-    const room = await Room.findOne({
-      roomId: req.params.roomId
-    });
+    res.json(subjects.map(mapSubjectResponse));
 
-    if (!room) {
-
-      return res.status(404).json({
-        message: "Room not found"
-      });
-
-    }
-
-    const alreadyJoined = room.participants.find(
-
-      (p) =>
-      p.user.toString() ===
-      req.session.userId
-
-    );
-
-    if (!alreadyJoined) {
-
-      room.participants.push({
-
-        user: req.session.userId,
-        ready: false,
-        preferredLanguage:
-        room.settings.language
-
-      });
-
-      await room.save();
-
-    }
-
-    res.json({
-      success: true
-    });
-
-  } catch (err) {
-
-    console.log(err);
+  } catch (error) {
+    console.log(error);
 
     res.status(500).json({
-      message: "Join room failed"
+      message: "Server error"
     });
-
   }
-
 };
 
+// GET second year subject by slug
+const getSecondYearSubjectBySlug = async (req, res) => {
+  try {
+    const subject = await SecondYearSubject.findOne({
+      slug: req.params.slug
+    });
+
+    if (!subject) {
+      return res.status(404).json({
+        message: "Subject not found"
+      });
+    }
+
+    res.json(mapSubjectResponse(subject));
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
+};
 
 module.exports = {
-  createRoom,
-  getRoom,
-  joinRoom
+  getSubjects,
+  getFirstYearSubjects,
+  getFirstYearSubjectBySlug,
+  getSecondYearSubjects,
+  getSecondYearSubjectBySlug
 };
