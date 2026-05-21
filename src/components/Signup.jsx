@@ -72,21 +72,21 @@ const Signup = () => {
 
       if (res.ok) {
 
-        setMessage("✅ Signup successful 🎉");
+  setMessage("✅ Signup successful 🎉");
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify(data.user)
-        );
+  localStorage.setItem(
+    "user",
+    JSON.stringify(data.user)
+  );
 
-        setTimeout(() => {
+  // Force navbar/session refresh
+  setTimeout(() => {
 
-          navigate("/");
-          window.location.reload();
+    window.location.href = "/";
 
-        }, 1000);
+  }, 1000);
 
-      } else {
+} else {
 
         setMessage(
           `❌ ${data.message || "Signup failed"}`
