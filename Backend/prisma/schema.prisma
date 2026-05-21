@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @map("_id") @default(auto()) @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  invites   Invite[]
+  rooms     Room[]   @relation("RoomCreator")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invite {
+  id         String   @id @map("_id") @default(auto()) @db.ObjectId
+  email      String
+  token      String   @unique
+  status     String   @default("pending")
+  topic      String
+  difficulty String
+  senderId   String?  @db.ObjectId
+  sender     User?    @relation(fields: [senderId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model FirstYearSubject {
+  id                 String     @id @map("_id") @default(auto()) @db.ObjectId
+  name               String
+  slug               String     @unique
+  description        String
+  notes              Resource[]
+  pyqs               Resource[]
+  cho                Resource[]
+  assignments        Resource[]
+  importantQuestions Resource[]
+  videoResources     Resource[]
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+}
+
+model SecondYearSubject {
+  id                 String     @id @map("_id") @default(auto()) @db.ObjectId
+  name               String
+  slug               String     @unique
+  description        String
+  notes              Resource[]
+  pyqs               Resource[]
+  cho                Resource[]
+  assignments        Resource[]
+  importantQuestions Resource[]
+  videoResources     Resource[]
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Room {
+  id          String   @id @map("_id") @default(auto()) @db.ObjectId
+  roomId      String   @unique
+  topic       String?
+  difficulty  String?
+  createdById String?  @db.ObjectId
+  createdBy   User?    @relation("RoomCreator", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @map("_id") @default(auto()) @db.ObjectId
+  sid       String?  @unique
+  expiresAt DateTime?
+  expires   DateTime?
+  data      Json
+}
+
+type Resource {
+  title String
+  link  String
+  type  String
+}

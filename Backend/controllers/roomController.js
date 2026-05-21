@@ -1,11 +1,10 @@
-const FirstYearSubject = require("../models/FirstYearSubject");
-const SecondYearSubject = require("../models/SecondYearSubject");
+const { prisma } = require("../config/db");
 
 const mapSubjectResponse = (subject) => {
   if (!subject) return null;
 
   return {
-    ...subject._doc,
+    ...subject,
     resources: {
       notes: subject.notes || [],
       pyqs: subject.pyqs || [],
@@ -20,8 +19,8 @@ const mapSubjectResponse = (subject) => {
 // GET all subjects
 const getSubjects = async (req, res) => {
   try {
-    const first = await FirstYearSubject.find();
-    const second = await SecondYearSubject.find();
+    const first = await prisma.firstYearSubject.findMany();
+    const second = await prisma.secondYearSubject.findMany();
 
     res.json([
       ...first.map(mapSubjectResponse),
@@ -39,7 +38,7 @@ const getSubjects = async (req, res) => {
 // GET first year subjects
 const getFirstYearSubjects = async (req, res) => {
   try {
-    const subjects = await FirstYearSubject.find();
+    const subjects = await prisma.firstYearSubject.findMany();
 
     res.json(subjects.map(mapSubjectResponse));
   } catch (error) {
@@ -54,8 +53,8 @@ const getFirstYearSubjects = async (req, res) => {
 // GET first year subject by slug
 const getFirstYearSubjectBySlug = async (req, res) => {
   try {
-    const subject = await FirstYearSubject.findOne({
-      slug: req.params.slug
+    const subject = await prisma.firstYearSubject.findUnique({
+      where: { slug: req.params.slug }
     });
 
     if (!subject) {
@@ -78,7 +77,7 @@ const getFirstYearSubjectBySlug = async (req, res) => {
 // GET second year subjects
 const getSecondYearSubjects = async (req, res) => {
   try {
-    const subjects = await SecondYearSubject.find();
+    const subjects = await prisma.secondYearSubject.findMany();
 
     res.json(subjects.map(mapSubjectResponse));
 
@@ -94,8 +93,8 @@ const getSecondYearSubjects = async (req, res) => {
 // GET second year subject by slug
 const getSecondYearSubjectBySlug = async (req, res) => {
   try {
-    const subject = await SecondYearSubject.findOne({
-      slug: req.params.slug
+    const subject = await prisma.secondYearSubject.findUnique({
+      where: { slug: req.params.slug }
     });
 
     if (!subject) {

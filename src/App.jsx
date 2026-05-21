@@ -12,6 +12,7 @@ import Community from './components/Community'
 import Footer from './components/Footer'
 import Subjects from './pages/Subjects'
 import SubjectDetail from './pages/SubjectDetail'
+import UploadSubjectPage from './pages/UploadSubject'
 import NexusPlayground from './components/NexusPlayground'
 import CoursesPage from './components/CoursesPage'
 import PlaygroundPage from './pages/PlaygroundPage'
@@ -253,6 +254,7 @@ function App() {
         } />
         <Route path="/subjects" element={<Subjects />} />
         <Route path="/subject/:name" element={<SubjectDetail />} />
+        <Route path="/upload-subject" element={<UploadSubjectPage />} />
         <Route path="/PlaygroundPage" element={<PlaygroundPage />} />
         <Route path="/courses" element={<Courses />} />
         <Route path='/Signup' element={<Signup />} />

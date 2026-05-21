@@ -2,72 +2,19 @@ const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 
-const { ObjectId } = require("bson");
 const { prisma } = require("../config/db");
 const sendEmail = require("../services/sendEmail");
 const protect = require("../middleware/auth");
 
 const createInvite = async (data) => {
-  try {
-    return await prisma.invite.create({ data });
-  } catch (err) {
-    if (err.code === "P2031") {
-      const now = new Date();
-      const id = new ObjectId();
-
-      await prisma.$runCommandRaw({
-        insert: "Invite",
-        documents: [{
-          _id: id,
-          ...data,
-          createdAt: { $date: now.toISOString() },
-          updatedAt: { $date: now.toISOString() }
-        }]
-      });
-
-      return {
-        id: id.toString(),
-        email: data.email,
-        token: data.token,
-        status: data.status || "pending",
-        senderId: data.senderId,
-        topic: data.topic,
-        difficulty: data.difficulty,
-        createdAt: now,
-        updatedAt: now
-      };
-    }
-    throw err;
-  }
+  return prisma.invite.create({ data });
 };
 
 const updateInviteStatus = async (token, status) => {
-  try {
-    return await prisma.invite.update({
-      where: { token },
-      data: { status }
-    });
-  } catch (err) {
-    if (err.code === "P2031") {
-      const now = new Date();
-      await prisma.$runCommandRaw({
-        update: "Invite",
-        updates: [
-          {
-            q: { token },
-            u: {
-              $set: {
-                status,
-                updatedAt: { $date: now.toISOString() }
-              }
-            }
-          }
-        ]
-      });
-      return { token, status, updatedAt: now };
-    }
-    throw err;
-  }
+  return prisma.invite.update({
+    where: { token },
+    data: { status }
+  });
 };
 
 // 🔥 CREATE ROOM + SEND INVITES

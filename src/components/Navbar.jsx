@@ -205,6 +205,7 @@ const handleLogout = async () => {
     { name: "Tutorials", link: "#tutorial", dropdown: tutorialTopics },
     { name: "Community", link: "#community" },
     { name: "Notes", link: "/subjects" },
+    { name: "Upload", link: "/upload-subject" },
   ];
 
   const handleMouseEnter = (name) => {

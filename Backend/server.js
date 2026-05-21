@@ -7,15 +7,14 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const session = require("express-session");
-const MongoStoreRaw = require("connect-mongo");
-const MongoStore = MongoStoreRaw.default || MongoStoreRaw;
+const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
-const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
+const roomRoutes = require("./routes/roomRoutes");
 
 const app = express();
-const connectDB = require("./config/db");
+const { connectDB, prisma } = require("./config/db");
 
 connectDB();
 
@@ -36,14 +35,20 @@ app.use(cors({
 }));
 app.set("trust proxy", 1);
 
+// serve uploaded files
+const uploadsPath = path.join(__dirname, "public", "uploads");
+app.use('/uploads', express.static(uploadsPath));
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "default_super_secret_key",
 
   resave: false,
   saveUninitialized: false,
 
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI
+  store: new PrismaSessionStore(prisma, {
+    checkPeriod: 2 * 60 * 1000,
+    dbRecordIdIsSessionId: true,
+    dbRecordIdFunction: undefined,
   }),
 
   cookie: {
@@ -133,8 +138,8 @@ io.on("connection", (socket) => {
 });
 
 if (require.main === module) {
-  server.listen(5000, () => {
-    console.log(`🚀 Server running on import.meta.env.VITE_API_URL`);
+  server.listen(5001, () => {
+    console.log(`🚀 Server running on http://localhost:5001`);
   });
 }
 

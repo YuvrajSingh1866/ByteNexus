@@ -130,22 +130,7 @@ const mapSubjectData = (subject) => ({
 });
 
 const createFirstYearSubject = async (subject) => {
-  try {
-    await prisma.firstYearSubject.create({ data: mapSubjectData(subject) });
-  } catch (err) {
-    if (err.code === "P2031") {
-      await prisma.$runCommandRaw({
-        insert: "FirstYearSubject",
-        documents: [{
-          ...mapSubjectData(subject),
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }]
-      });
-      return;
-    }
-    throw err;
-  }
+  await prisma.firstYearSubject.create({ data: mapSubjectData(subject) });
 };
 
 const seedDatabase = async () => {
