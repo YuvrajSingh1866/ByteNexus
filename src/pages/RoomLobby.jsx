@@ -26,7 +26,7 @@ export default function RoomLobby() {
     },
   ];
 
-  const inviteLink = `http://localhost:5173/roomLobby/${roomId}`;
+  const inviteLink = `${window.location.origin}/roomLobby/${roomId}`;
 
   const copyInviteLink = async () => {
     try {
