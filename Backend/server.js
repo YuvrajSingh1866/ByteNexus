@@ -13,15 +13,16 @@ const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
-const { connectDB } = require("./config/db");
+
 const app = express();
+const connectDB = require("./config/db");
+
+connectDB();
 
 // set view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// DB connection
-connectDB();
 
 // middleware
 app.use(express.json());
