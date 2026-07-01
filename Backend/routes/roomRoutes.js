@@ -2,126 +2,91 @@ const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 
-const { ObjectId } = require("bson");
-const { prisma } = require("../config/db");
+const Invite = require("../models/Invite");
 const sendEmail = require("../services/sendEmail");
 const protect = require("../middleware/auth");
 
-const createInvite = async (data) => {
-  try {
-    return await prisma.invite.create({ data });
-  } catch (err) {
-    if (err.code === "P2031") {
-      const now = new Date();
-      const id = new ObjectId();
-
-      await prisma.$runCommandRaw({
-        insert: "Invite",
-        documents: [{
-          _id: id,
-          ...data,
-          createdAt: { $date: now.toISOString() },
-          updatedAt: { $date: now.toISOString() }
-        }]
-      });
-
-      return {
-        id: id.toString(),
-        email: data.email,
-        token: data.token,
-        status: data.status || "pending",
-        senderId: data.senderId,
-        topic: data.topic,
-        difficulty: data.difficulty,
-        createdAt: now,
-        updatedAt: now
-      };
-    }
-    throw err;
-  }
-};
-
-const updateInviteStatus = async (token, status) => {
-  try {
-    return await prisma.invite.update({
-      where: { token },
-      data: { status }
-    });
-  } catch (err) {
-    if (err.code === "P2031") {
-      const now = new Date();
-      await prisma.$runCommandRaw({
-        update: "Invite",
-        updates: [
-          {
-            q: { token },
-            u: {
-              $set: {
-                status,
-                updatedAt: { $date: now.toISOString() }
-              }
-            }
-          }
-        ]
-      });
-      return { token, status, updatedAt: now };
-    }
-    throw err;
-  }
-};
-
-// 🔥 CREATE ROOM + SEND INVITES
+// ===============================
+// Create Room
+// ===============================
 router.post("/create", protect, async (req, res) => {
-  console.log("SESSION DATA:", req.session);
   try {
     const { topic, difficulty, invitedFriends } = req.body;
 
     const senderId = req.session.userId;
 
-    if (!invitedFriends || invitedFriends.length === 0) {
-      return res.status(400).json({ message: "No emails provided" });
+    if (!senderId) {
+      return res.status(401).json({
+        message: "Please login first",
+      });
     }
 
-    for (let email of invitedFriends) {
+    if (!topic || !difficulty) {
+      return res.status(400).json({
+        message: "Topic and difficulty are required",
+      });
+    }
+
+    if (!invitedFriends || invitedFriends.length === 0) {
+      return res.status(400).json({
+        message: "Please invite at least one friend",
+      });
+    }
+
+    for (const email of invitedFriends) {
       const token = uuidv4();
 
-      await createInvite({
+      await Invite.create({
         email,
         token,
         senderId,
         topic,
-        difficulty
+        difficulty,
       });
 
-      const link = `http://localhost:5000/api/rooms/accept/${token}`;
+      const link = `${process.env.BACKEND_URL}/api/rooms/accept/${token}`;
+
       await sendEmail(email, link);
     }
 
-    res.json({ message: "Invites sent 🚀" });
-
+    res.status(200).json({
+      success: true,
+      message: "Invites sent successfully 🚀",
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
-  }
+  console.error("========== CREATE ROOM ERROR ==========");
+  console.error(err);
+  console.error(err.stack);
+
+  res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+}
 });
 
+// ===============================
+// Accept Invite
+// ===============================
 router.get("/accept/:token", async (req, res) => {
   try {
     const { token } = req.params;
 
-    const invite = await prisma.invite.findUnique({ where: { token } });
+    const invite = await Invite.findOne({ token });
 
     if (!invite) {
-      return res.status(400).send("Invalid or expired invite ❌");
+      return res.status(404).send("Invite not found");
     }
 
-    await updateInviteStatus(token, "accepted");
+    invite.status = "accepted";
 
-    res.redirect(`http://localhost:5173/roomLobby/${token}`);
+    await invite.save();
 
+    res.redirect(`${process.env.FRONTEND_URL}/roomLobby/${token}`);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+
+    res.status(500).send("Server Error");
   }
 });
 
