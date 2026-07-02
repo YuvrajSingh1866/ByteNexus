@@ -34,21 +34,44 @@ app.use(cors({
   ],
   credentials: true
 }));
-app.use(session({
-  secret: process.env.SESSION_SECRET || "default_super_secret_key",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bytenexus"
-  }),
-  cookie: {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production"
-    ? "none"
-    : "lax"
-}
-}));
+// Trust Render's proxy (IMPORTANT)
+app.set("trust proxy", 1);
+
+app.use(
+  session({
+    secret: "test-secret",
+    resave: false,
+    saveUninitialized: true, // <-- CHANGE THIS
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  })
+);
+
+app.use(
+  session({
+    secret: "test-secret",
+    resave: false,
+    saveUninitialized: true,
+
+    cookie: {
+      httpOnly: true,
+
+      // true only in production
+      secure: process.env.NODE_ENV === "production",
+
+      // Required for cross-origin cookies
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
+
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
+);
 
 // routes ,end points
 app.use("/api/subjects", subjectRoutes);
