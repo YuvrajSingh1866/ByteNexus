@@ -168,5 +168,96 @@ router.get("/me", async (req, res) => {
     });
   }
 });
+// ================= GET PROFILE =================
+router.get("/profile", async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
 
+    const user = await User.findById(req.session.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json(user);
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
+// ================= UPDATE PROFILE =================
+router.put("/profile", async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    const {
+      name,
+      username,
+      bio,
+      college,
+      branch,
+      year,
+      skills,
+      github,
+      linkedin,
+      portfolio,
+      avatar,
+      coverImage,
+    } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.session.userId,
+      {
+        name,
+        username,
+        bio,
+        college,
+        branch,
+        year,
+        skills,
+        github,
+        linkedin,
+        portfolio,
+        avatar,
+        coverImage,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully 🎉",
+      user: updatedUser,
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
 module.exports = router;

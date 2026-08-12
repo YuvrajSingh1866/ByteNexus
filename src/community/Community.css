@@ -1,0 +1,337 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+/* =========================
+   ByteNexus Design System
+========================= */
+
+:root {
+
+  /* Colors */
+
+  --bg: #080808;
+  --surface: #121212;
+  --surface-light: #171717;
+
+  --border: #252525;
+
+  --primary: #E53935;
+  --primary-hover: #FF4D4F;
+
+  --text: #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --text-muted: #7C7C7C;
+
+  /* Radius */
+
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 22px;
+
+  /* Shadow */
+
+  --shadow:
+    0 8px 30px rgba(0,0,0,.25);
+
+  /* Transition */
+
+  --transition: all .25s ease;
+
+}
+
+/* =========================
+   Page
+========================= */
+
+.bn-community {
+
+  width: 100%;
+  min-height: 100vh;
+
+  background:
+radial-gradient(circle at top, rgba(229,57,53,.05), transparent 45%),
+#080808;
+  color: var(--text);
+
+  font-family: "Inter", sans-serif;
+
+  padding-top: 115px;
+  padding-bottom: 40px;
+
+}
+
+/* =========================
+   Main Grid
+========================= */
+
+.bn-community-wrapper{
+
+    width:100%;
+
+    max-width:1500px;
+
+    margin:0 auto;
+
+    padding:0 28px;
+
+    display:grid;
+
+    grid-template-columns:
+
+    260px
+
+    minmax(0,1fr)
+
+    300px;
+
+    gap:32px;
+
+    align-items:start;
+
+}
+
+/* =========================
+   Left Sidebar
+========================= */
+
+.bn-community__col--left {
+
+
+
+  display: flex;
+
+  flex-direction: column;
+
+
+
+}
+
+/* =========================
+   Feed
+========================= */
+
+.bn-community__col--center {
+
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 24px;
+
+}
+
+/* =========================
+   Right Sidebar
+========================= */
+
+.bn-community__col--right {
+
+  position: sticky;
+
+  top: 92px;
+
+  align-self: start;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 24px;
+
+}
+
+/* =========================
+   Shared Card
+========================= */
+
+.bn-card {
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 24px;
+
+  box-shadow: var(--shadow);
+
+  transition: var(--transition);
+
+}
+
+.bn-card:hover {
+
+  transform: translateY(-2px);
+
+  border-color: #303030;
+
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.bn-btn {
+
+  border: none;
+
+  outline: none;
+
+  cursor: pointer;
+
+  padding: 12px 22px;
+
+  border-radius: 12px;
+
+  font-size: .95rem;
+
+  font-weight: 600;
+
+  transition: var(--transition);
+
+}
+
+.bn-btn-primary {
+
+  background: var(--primary);
+
+  color: white;
+
+}
+
+.bn-btn-primary:hover {
+
+  background: var(--primary-hover);
+
+}
+
+.bn-btn-secondary {
+
+  background: var(--surface-light);
+
+  color: var(--text);
+
+}
+
+.bn-btn-secondary:hover {
+
+  background: #202020;
+
+}
+
+/* =========================
+   Typography
+========================= */
+
+h1,
+h2,
+h3,
+h4 {
+
+  margin: 0;
+
+  color: white;
+
+  font-weight: 700;
+
+}
+
+p {
+
+  margin: 0;
+
+  color: var(--text-secondary);
+
+  line-height: 1.7;
+
+}
+
+small {
+
+  color: var(--text-muted);
+
+}
+
+/* =========================
+   Scrollbar
+========================= */
+
+::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+::-webkit-scrollbar-track {
+
+  background: transparent;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+  background: #2b2b2b;
+
+  border-radius: 999px;
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+  background: #404040;
+
+}
+
+/* =========================
+   Tablet
+========================= */
+
+@media (max-width:1400px) {
+
+  .bn-community-wrapper {
+
+    grid-template-columns:
+
+      250px
+
+      1fr;
+
+  }
+
+  .bn-community__col--right {
+
+    display: none;
+
+  }
+
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width:900px) {
+
+  .bn-community {
+
+    padding-top: 80px;
+
+  }
+
+  .bn-community-wrapper {
+
+    grid-template-columns: 1fr;
+
+    padding: 0 16px;
+
+  }
+
+  .bn-community__col--left {
+
+    display: none;
+
+  }
+
+}

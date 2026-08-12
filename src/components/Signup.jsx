@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import './Signup.css'
-import Navbar from './Navbar'
-import Footer from './Footer'
+import React, { useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import "./Signup.css";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const Signup = () => {
-
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const inviteToken = searchParams.get("invite");
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const Signup = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -37,31 +39,42 @@ const Signup = () => {
     setMessage("");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("✅ Signup successful 🎉");
-
-        // ✅ store user
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // ✅ redirect after short delay
+        setMessage("✅ Signup successful 🎉");
+
+        // User came from invite
+        if (inviteToken) {
+          setTimeout(() => {
+            window.location.href =
+              `${import.meta.env.VITE_API_URL}/api/rooms/accept/${inviteToken}`;
+          }, 500);
+
+          return;
+        }
+
+        // Normal Signup
         setTimeout(() => {
           navigate("/");
-        }, 1000);
-
+        }, 800);
       } else {
         setMessage("❌ " + data.message);
       }
-
     } catch (error) {
       console.error(error);
       setMessage("❌ Server error");
@@ -74,42 +87,80 @@ const Signup = () => {
     <div>
       <Navbar />
 
-      <h1 className='signup-heading'>
-        <span className="gradient-text">Join ByteNexus</span><br/>
-        <span className='signup-sub'>
+      <h1 className="signup-heading">
+        <span className="gradient-text">Join ByteNexus</span>
+        <br />
+        <span className="signup-sub">
           Build projects, make friends, and grow as a developer.
         </span>
       </h1>
 
-      <div className='signup-grid'>
-        <div className='signup-card'>
-
+      <div className="signup-grid">
+        <div className="signup-card">
           <h2>Create Account</h2>
 
-          <form className='signup-form' onSubmit={handleSubmit}>
-            <input type="text" name="name" placeholder="Full Name" required onChange={handleChange}/>
-            <input type="email" name="email" placeholder="Email Address" required onChange={handleChange}/>
-            <input type="password" name="password" placeholder="Password" required onChange={handleChange}/>
-            <input type="password" name="confirmPassword" placeholder="Confirm Password" required onChange={handleChange}/>
+          <form className="signup-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              required
+              onChange={handleChange}
+            />
 
-            <button type="submit" className='signup-btn' disabled={loading}>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              required
+              onChange={handleChange}
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              onChange={handleChange}
+            />
+
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              required
+              onChange={handleChange}
+            />
+
+            <button
+              type="submit"
+              className="signup-btn"
+              disabled={loading}
+            >
               {loading ? "Creating..." : "Sign Up →"}
             </button>
           </form>
 
-          {/* message */}
           {message && <p className="signup-message">{message}</p>}
 
-          <p className='signup-login'>
-            Already have an account? <Link to="/login">Login</Link>
+          <p className="signup-login">
+            Already have an account?{" "}
+            <Link
+              to={
+                inviteToken
+                  ? `/login?invite=${inviteToken}`
+                  : "/login"
+              }
+            >
+              Login
+            </Link>
           </p>
-
         </div>
       </div>
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;

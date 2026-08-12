@@ -1,138 +1,27 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Courses.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { COURSES } from "../data/Courses";
 
-/* ── Data ──────────────────────────────────────────────────────── */
-const COURSES = [
-  {
-    id: 1,
-    number: "01",
-    category: "Design",
-    title: "Typography & Visual Hierarchy",
-    description:
-      "Master the art of arranging type to guide attention, build rhythm, and communicate meaning before a single word is read. Explore typeface anatomy, pairing logic, and editorial systems.",
-    tags: ["Type", "Layout", "Editorial"],
-    instructor: "Marina Holst",
-    duration: "8 weeks",
-    lessons: 24,
-    students: 1480,
-    capacity: 2000,
-    level: "beginner",
-    featured: true,
-    price: "free",
-  },
-  {
-    id: 2,
-    number: "02",
-    category: "Development",
-    title: "React Architecture Patterns",
-    description:
-      "Go beyond components. Learn scalable state patterns, composition strategies, and performance primitives that separate hobby projects from production-grade apps.",
-    tags: ["React", "State", "Performance"],
-    instructor: "Zara Ahmed",
-    duration: "10 weeks",
-    lessons: 32,
-    students: 920,
-    capacity: 1200,
-    level: "advanced",
-    featured: false,
-    price: "paid",
-    amount: "$49",
-  },
-  {
-    id: 3,
-    number: "03",
-    category: "Strategy",
-    title: "Product Thinking",
-    description:
-      "Develop the mental models product managers use to prioritise ruthlessly, frame problems precisely, and ship things people actually want.",
-    tags: ["PM", "Roadmap", "OKRs"],
-    instructor: "Leon Park",
-    duration: "6 weeks",
-    lessons: 18,
-    students: 670,
-    capacity: 800,
-    level: "intermediate",
-    featured: false,
-    price: "free",
-  },
-  {
-    id: 4,
-    number: "04",
-    category: "Data",
-    title: "Visual Data Storytelling",
-    description:
-      "Transform raw numbers into narratives that move people. Study the grammar of charts, the ethics of visualisation, and the craft of a chart that changes minds.",
-    tags: ["D3", "Charts", "Narrative"],
-    instructor: "Priya Nair",
-    duration: "7 weeks",
-    lessons: 21,
-    students: 540,
-    capacity: 600,
-    level: "intermediate",
-    featured: false,
-    price: "paid",
-    amount: "$39",
-  },
-  {
-    id: 5,
-    number: "05",
-    category: "Design",
-    title: "Motion & Interaction Design",
-    description:
-      "Animation is not decoration — it is communication. Learn timing functions, spring physics, and choreography to build interfaces that feel inevitable.",
-    tags: ["Animation", "CSS", "Figma"],
-    instructor: "Yuki Tanaka",
-    duration: "9 weeks",
-    lessons: 27,
-    students: 310,
-    capacity: 500,
-    level: "advanced",
-    featured: false,
-    price: "paid",
-    amount: "$59",
-  },
-  {
-    id: 6,
-    number: "06",
-    category: "Development",
-    title: "API Design & REST Principles",
-    description:
-      "Write APIs that developers love: consistent, predictable, and versioned without drama. Covers resource modelling, error contracts, and documentation that doesn't need a Slack to interpret.",
-    tags: ["REST", "Node", "OpenAPI"],
-    instructor: "Sam Torres",
-    duration: "5 weeks",
-    lessons: 15,
-    students: 820,
-    capacity: 1000,
-    level: "beginner",
-    featured: false,
-    price: "free",
-  },
-  {
-    id: 7,
-    number: "07",
-    category: "Strategy",
-    title: "Brand Identity Systems",
-    description:
-      "Logos are the least interesting part of a brand. This course teaches you to build systems: voice, motion language, colour semantics, and governance that scales.",
-    tags: ["Branding", "System", "Identity"],
-    instructor: "Amara Diallo",
-    duration: "8 weeks",
-    lessons: 22,
-    students: 450,
-    capacity: 600,
-    level: "intermediate",
-    featured: false,
-    price: "paid",
-    amount: "$44",
-  },
+
+const CATEGORIES = [
+  "All",
+  "Programming",
+  "Web Development",
+  "AI & ML",
+  "Cyber Security",
+  "College",
+  "Career",
 ];
 
-const CATEGORIES = ["All", "Design", "Development", "Strategy", "Data"];
-const LEVELS = ["All Levels", "beginner", "intermediate", "advanced"];
-
+const LEVELS = [
+  "All Levels",
+  "beginner",
+  "intermediate",
+  "advanced",
+];
 /* ── Helpers ──────────────────────────────────────────────────── */
 function LevelBadge({ level }) {
   return (
@@ -162,13 +51,18 @@ function EnrollmentBar({ students, capacity }) {
 }
 
 function CourseCard({ course, index }) {
+   const navigate = useNavigate();
+
   const isFree = course.price === "free";
 
   return (
     <article
-      className={`course-card${course.featured ? " featured" : ""} ${isFree ? "course-card--free" : "course-card--paid"}`}
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
+  className={`course-card${course.featured ? " featured" : ""} ${
+    isFree ? "course-card--free" : "course-card--paid"
+  }`}
+  style={{ animationDelay: `${index * 60}ms` }}
+  onClick={() => navigate(`/courses/${course.id}`)}
+>
       {/* Price badge */}
       <div className={`course-price-badge ${isFree ? "free" : "paid"}`}>
         {isFree ? "Free" : course.amount}
@@ -217,6 +111,7 @@ function CourseCard({ course, index }) {
 
 /* ── Page ─────────────────────────────────────────────────────── */
 export default function Courses() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [level, setLevel] = useState("All Levels");
@@ -291,6 +186,7 @@ export default function Courses() {
             onClick={() => setView("grid")}
             title="Grid view"
           >
+
             ⊞
           </button>
           <button
@@ -301,6 +197,9 @@ export default function Courses() {
             ☰
           </button>
         </div>
+        <button className="upload-course-btn" onClick={() => navigate("/upload-course")}>
+          + Upload Course
+        </button>
       </div>
 
       {/* ── Section Label ── */}
@@ -327,7 +226,44 @@ export default function Courses() {
           ))}
         </div>
       )}
+  <section className="upload-section">
 
+  <h2>Become an Instructor</h2>
+
+  <p>
+    Have something valuable to teach?
+
+    Create your own course, upload videos,
+    PDFs, coding exercises and assignments.
+
+    Set your own price and earn money every
+    time a student enrolls.
+  </p>
+
+  <button onClick={() => navigate("/upload-course")}>
+    Upload Your First Course
+</button>
+
+  <div className="creator-card">
+
+    <div className="creator-stat">
+      <h3>Unlimited</h3>
+      <span>Students</span>
+    </div>
+
+    <div className="creator-stat">
+      <h3>Set Your Own</h3>
+      <span>Course Price</span>
+    </div>
+
+    <div className="creator-stat">
+      <h3>100%</h3>
+      <span>Creator Dashboard</span>
+    </div>
+
+  </div>
+
+</section>
       <Footer />
     </div>
   );

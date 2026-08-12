@@ -1,0 +1,10 @@
+.bn-feed{
+    width:100%;
+}
+
+.bn-posts{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    margin-top:28px;
+}

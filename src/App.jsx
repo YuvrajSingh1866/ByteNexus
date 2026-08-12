@@ -8,7 +8,7 @@ import VideoCard from './components/VideoCard'
 import StudyMaterial from './components/StudyMaterial'
 import Features from './components/Features'
 import Updates from './components/Updates'
-import Community from './components/Community'
+
 import Footer from './components/Footer'
 import Subjects from './pages/Subjects'
 import SubjectDetail from './pages/SubjectDetail'
@@ -22,10 +22,10 @@ import ProtectedRoute from './components/ProtectedRoute'
 import About from './pages/About'
 import Chatbot from './components/Chatbot'
 import RoomLobby from './pages/RoomLobby'
-
-
-
-
+import CourseDetails from './pages/CourseDetails'
+import UploadCourse from "./pages/UploadCourse";
+import Profile from './components/Profile'
+import Community from "./community/Community";
 
 function App() {
   const { isLight } = useTheme();
@@ -257,6 +257,7 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path='/Signup' element={<Signup />} />
         <Route path='/Login' element={<Login />} />
+        <Route path='/profile' element={<Profile />} />
         <Route path="/protected" element={
           <ProtectedRoute>
             <PlaygroundPage />
@@ -264,6 +265,17 @@ function App() {
         } />
         <Route path='/roomLobby/:roomId' element={<RoomLobby />} />
         <Route path="/about" element={<About />} />
+        <Route path="/courses/:id" element={<CourseDetails />} />
+        <Route path="/upload-course" element={<UploadCourse />} />
+        <Route
+  path="/community"
+  element={
+    <>
+      <Navbar />
+      <Community />
+    </>
+  }
+/>
       </Routes>
     </div>
   )

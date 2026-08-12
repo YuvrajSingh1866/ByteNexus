@@ -1,0 +1,178 @@
+/* =========================================================
+   RIGHT SIDEBAR
+========================================================= */
+
+.bn-sidebar-right {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+
+  position: sticky;
+  top: 92px;
+
+  align-self: flex-start;
+}
+
+
+/* =========================================================
+   WIDGET WRAPPER
+========================================================= */
+
+.bn-sidebar-widget {
+  width: 100%;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   COMMON WIDGET CARD
+========================================================= */
+
+/*
+   Apply this class to the actual cards too if your
+   individual components don't already have it.
+*/
+
+.bn-widget-card {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 18px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+
+  box-shadow: var(--shadow);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+/* =========================================================
+   CARD HOVER
+========================================================= */
+
+.bn-widget-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+
+  background: var(--surface);
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.bn-widget-card__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin: 0 0 14px;
+
+  color: var(--text-primary);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   TITLE ICON / SECONDARY CONTENT
+========================================================= */
+
+.bn-widget-card__title svg {
+  flex-shrink: 0;
+
+  color: var(--text-secondary);
+
+  transition: color 0.2s ease;
+}
+
+
+/* =========================================================
+   LINK
+========================================================= */
+
+.bn-widget-card__link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 14px;
+
+  color: var(--primary);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    gap 0.2s ease;
+}
+
+
+/* =========================================================
+   LINK HOVER
+========================================================= */
+
+.bn-widget-card__link:hover {
+  color: var(--primary-hover);
+
+  gap: 8px;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.bn-widget-card__divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 14px 0;
+
+  background: var(--border);
+}
+
+
+/* =========================================================
+   SMALL META TEXT
+========================================================= */
+
+.bn-widget-card__meta {
+  color: var(--text-secondary);
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1400px) {
+
+  .bn-sidebar-right {
+    display: none;
+  }
+
+}

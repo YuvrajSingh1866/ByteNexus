@@ -132,9 +132,9 @@ const Navbar = () => {
     { name: "Home", link: "/" },
     { name: "Nexus Playground", link: "/PlaygroundPage" },
     { name: "Courses", link: "/Courses", dropdown: courseSubjects },
-    { name: "Tutorials", link: "#tutorial", dropdown: tutorialTopics },
-    { name: "Community", link: "#community" },
-    { name: "Notes", link: "/subjects" },
+    { name: "Community", link: "/community" },
+   
+    
   ];
 
   const handleMouseEnter = (name) => {
@@ -151,105 +151,397 @@ const Navbar = () => {
   return (
     <>
       <style>{`
-        #navbar { position: relative; z-index: 1000; }
-        .nav-links li { position: relative; display: flex; align-items: center; }
-
-        .has-dropdown > a::after {
-          content: "▾";
-          margin-left: 5px;
-          font-size: 10px;
-          opacity: 0.6;
-          transition: transform 0.25s ease, opacity 0.2s;
-          display: inline-block;
-        }
-
-        .has-dropdown:hover > a::after {
-          transform: rotate(180deg);
-          opacity: 1;
-        }
-
-        .dropdown-menu {
-          position: absolute;
-          top: calc(100% + 14px);
-          left: 50%;
-          transform: translateX(-50%) translateY(-6px);
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          padding: 10px;
-          min-width: 230px;
-          box-shadow: 0 20px 60px var(--shadow-card);
-          opacity: 0;
-          pointer-events: none;
-          transition: opacity 0.22s ease, transform 0.22s;
-          z-index: 9999;
-          backdrop-filter: blur(20px);
-        }
-
-        .dropdown-menu.open {
-          opacity: 1;
-          pointer-events: all;
-          transform: translateX(-50%) translateY(0);
-        }
-
-        .dropdown-item {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 9px 12px;
-          border-radius: 9px;
-          text-decoration: none;
-          color: var(--text-secondary);
-          transition: all 0.2s ease;
-        }
-
-        .dropdown-item:hover {
-          color: var(--text-primary);
-          transform: translateX(3px);
-          background: var(--glass-bg);
-        }
-
-        .nav-cta {
-          padding: 8px 14px;
-          border-radius: 8px;
-          background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-          color: #ffffff !important;
-          text-decoration: none;
-          margin-left: 10px;
-          border: none;
-          cursor: pointer;
-          font-weight: 600;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
         
-        .nav-cta:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px var(--glow-blue);
-        }
+        /* =========================================================
+   BYTENEXUS NAVBAR
+========================================================= */
 
-        .theme-toggle-btn {
-          background: var(--glass-bg);
-          border: 1px solid var(--glass-border);
-          border-radius: 50px;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-primary);
-          cursor: pointer;
-          overflow: hidden;
-          backdrop-filter: blur(10px);
-          margin-left: 10px;
-          margin-right: 4px;
-          transition: all 0.3s ease;
-        }
+#navbar {
+  position: fixed;
 
-        .theme-toggle-btn:hover {
-          background: var(--glass-border);
-          border-color: var(--border-hover);
-          box-shadow: var(--glow-blue);
-        }
+  top: 20px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: calc(100% - 40px);
+  max-width: 1200px;
+
+  height: 64px;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 28px;
+
+  background: rgba(2, 6, 23, 0.72);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid var(--border);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(56, 189, 248, 0.05);
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+
+/* =========================================================
+   LIGHT / MORNING NAVBAR
+========================================================= */
+
+html.morning #navbar,
+html.light #navbar {
+  background: var(--nav-bg);
+
+  border-color: var(--glass-border);
+
+  box-shadow:
+    0 8px 32px rgba(180, 83, 9, 0.08),
+    0 0 0 1px rgba(180, 83, 9, 0.06);
+}
+
+
+/* =========================================================
+   NAV LINKS
+========================================================= */
+
+#navbar .nav-links {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+#navbar .nav-links li {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+}
+
+
+#navbar .nav-links a {
+  color: var(--text-secondary);
+
+  text-decoration: none;
+
+  font-size: 0.875rem;
+
+  font-weight: 500;
+
+  padding: 8px 14px;
+
+  border-radius: 10px;
+
+  position: relative;
+
+  letter-spacing: 0.01em;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+#navbar .nav-links a:hover {
+  color: var(--text-primary);
+
+  background:
+    rgba(56, 189, 248, 0.08);
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+#navbar .nav-logo {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  text-decoration: none;
+}
+
+
+#navbar .nav-logo-svg {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+}
+
+
+#navbar .nav-logo-text {
+  display: flex;
+
+  flex-direction: column;
+
+  line-height: 1;
+}
+
+
+#navbar .nav-logo-main {
+  font-family: 'Syne', sans-serif;
+
+  font-weight: 800;
+
+  font-size: 1.15rem;
+
+  letter-spacing: -0.03em;
+
+  background:
+    linear-gradient(
+      110deg,
+      #38bdf8 0%,
+      #a78bfa 55%,
+      #22d3ee 100%
+    );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  background-clip: text;
+}
+
+
+#navbar .nav-logo-sub {
+  font-family: 'JetBrains Mono', monospace;
+
+  font-size: 0.48rem;
+
+  font-weight: 500;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+
+  color: #94a3b8;
+
+  margin-top: 1px;
+}
+
+
+/* =========================================================
+   NAV CTA
+========================================================= */
+
+#navbar .nav-cta {
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--accent-blue),
+      var(--accent-purple)
+    );
+
+  color: #fff !important;
+
+  text-decoration: none;
+
+  margin-left: 10px;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+#navbar .nav-cta:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 15px var(--glow-blue);
+}
+
+
+/* =========================================================
+   THEME TOGGLE
+========================================================= */
+
+#navbar .theme-toggle-btn {
+  background: var(--glass-bg);
+
+  border:
+    1px solid var(--glass-border);
+
+  border-radius: 50px;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: var(--text-primary);
+
+  cursor: pointer;
+
+  overflow: hidden;
+
+  backdrop-filter: blur(10px);
+
+  margin-left: 10px;
+  margin-right: 4px;
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+
+#navbar .theme-toggle-btn:hover {
+  background: var(--glass-border);
+
+  border-color: var(--border-hover);
+
+  box-shadow: var(--glow-blue);
+}
+
+
+/* =========================================================
+   DROPDOWN
+========================================================= */
+
+#navbar .has-dropdown > a::after {
+  content: "▾";
+
+  margin-left: 5px;
+
+  font-size: 10px;
+
+  opacity: 0.6;
+
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease;
+
+  display: inline-block;
+}
+
+
+#navbar .has-dropdown:hover > a::after {
+  transform: rotate(180deg);
+
+  opacity: 1;
+}
+
+
+#navbar .dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 14px);
+
+  left: 50%;
+
+  transform:
+    translateX(-50%)
+    translateY(-6px);
+
+  background: var(--bg-card);
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 14px;
+
+  padding: 10px;
+
+  min-width: 230px;
+
+  box-shadow:
+    0 20px 60px var(--shadow-card);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+
+  z-index: 9999;
+
+  backdrop-filter: blur(20px);
+}
+
+
+#navbar .dropdown-menu.open {
+  opacity: 1;
+
+  pointer-events: all;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+
+#navbar .dropdown-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 9px 12px;
+
+  border-radius: 9px;
+
+  text-decoration: none;
+
+  color: var(--text-secondary);
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+#navbar .dropdown-item:hover {
+  color: var(--text-primary);
+
+  transform: translateX(3px);
+
+  background: var(--glass-bg);
+}
       `}</style>
 
       <nav id="navbar">
@@ -323,15 +615,55 @@ const Navbar = () => {
           {loading ? (
             <li><span style={{ color: "var(--text-secondary)" }}>Loading...</span></li>
           ) : user ? (
-            <li>
-              <span style={{ color: "var(--accent-blue)", marginRight: "10px", fontWeight: "600" }}>
-                👋 {user.name}
-              </span>
+            <li
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  }}
+>
+  <div
+    onClick={() => navigate("/profile")}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      cursor: "pointer",
+      padding: "6px 12px",
+      borderRadius: "10px",
+      transition: "0.3s",
+    }}
+  >
+    <div
+      style={{
+        width: "36px",
+        height: "36px",
+        borderRadius: "50%",
+        background: "linear-gradient(135deg,#7c3aed,#06b6d4)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "white",
+        fontWeight: "bold",
+      }}
+    >
+      {user.name.charAt(0).toUpperCase()}
+    </div>
 
-              <button className="nav-cta" onClick={handleLogout}>
-                Logout →
-              </button>
-            </li>
+    <span
+      style={{
+        color: "var(--text-primary)",
+        fontWeight: "600",
+      }}
+    >
+      {user.name}
+    </span>
+  </div>
+
+  <button className="nav-cta" onClick={handleLogout}>
+    Logout
+  </button>
+</li>
           ) : (
             <>
               <li>

@@ -1,0 +1,45 @@
+.bn-comment-preview {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #1e2a42;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bn-comment-preview__item {
+  display: flex;
+  gap: 10px;
+}
+
+.bn-comment-preview__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #cbd5e1;
+  background: #1e2a42;
+}
+
+.bn-comment-preview__body {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.bn-comment-preview__author {
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-right: 6px;
+}
+
+.bn-comment-preview__text {
+  color: #94a3b8;
+}

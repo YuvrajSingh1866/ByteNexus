@@ -1,0 +1,701 @@
+/* =====================================================
+   POST CARD
+===================================================== */
+
+.bn-post-card {
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+
+    padding: 28px;
+
+    box-shadow: var(--shadow);
+
+    transition: all .28s ease;
+
+    overflow: hidden;
+
+}
+
+.bn-post-card:hover{
+
+    transform: translateY(-3px);
+
+    border-color:#343434;
+
+    box-shadow:
+        0 14px 40px rgba(0,0,0,.35);
+
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.bn-post-card__header{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    justify-content:space-between;
+
+    gap:18px;
+
+}
+
+/* =====================================================
+   LEFT
+===================================================== */
+
+.bn-post-card__meta{
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+/* =====================================================
+   AVATAR
+===================================================== */
+
+.bn-post-card__avatar{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+    font-weight:700;
+
+    font-size:18px;
+
+    color:white;
+
+    background:linear-gradient(
+        135deg,
+        #E53935,
+        #B71C1C
+    );
+
+}
+
+/* =====================================================
+   NAME ROW
+===================================================== */
+
+.bn-post-card__meta-top{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+.bn-post-card__name{
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:700;
+
+}
+
+.bn-post-card__username{
+
+    color:var(--text-secondary);
+
+    font-size:13px;
+
+}
+
+.bn-post-card__dot{
+
+    color:#555;
+
+}
+
+.bn-post-card__time{
+
+    color:var(--text-muted);
+
+    font-size:13px;
+
+}
+
+/* =====================================================
+   ROLE
+===================================================== */
+
+.bn-post-card__role{
+
+    margin-top:6px;
+
+    color:var(--text-secondary);
+
+    font-size:13px;
+
+}
+
+/* =====================================================
+   CATEGORY BADGE
+===================================================== */
+
+.bn-post-card__tag{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:rgba(229,57,53,.14);
+
+    border:1px solid rgba(229,57,53,.25);
+
+    color:var(--primary);
+
+    font-size:12px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.bn-post-card__content{
+
+    margin-top:22px;
+
+    color:#E5E5E5;
+
+    font-size:15px;
+
+    line-height:1.9;
+
+}
+
+/* =====================================================
+   IMAGE
+===================================================== */
+
+.bn-post-card__image-placeholder{
+
+    margin-top:22px;
+
+    height:260px;
+
+    border-radius:18px;
+
+    background:#1A1A1A;
+
+    border:1px dashed #323232;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:var(--text-secondary);
+
+    transition:.25s;
+
+}
+
+.bn-post-card__image-placeholder svg{
+
+    color:var(--primary);
+
+}
+
+.bn-post-card__image-placeholder:hover{
+
+    border-color:var(--primary);
+
+    background:#1C1C1C;
+
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.bn-post-card__footer{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-top:24px;
+
+    padding-top:20px;
+
+    border-top:1px solid var(--border);
+
+}
+
+/* =====================================================
+   ACTION BUTTON
+===================================================== */
+
+.bn-post-action{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:none;
+
+    background:#1A1A1A;
+
+    color:var(--text-secondary);
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.bn-post-action:hover{
+
+    background:#222;
+
+    color:white;
+
+}
+
+.bn-post-action svg{
+
+    transition:.25s;
+
+}
+
+.bn-post-action:hover svg{
+
+    color:var(--primary);
+
+}
+
+/* =====================================================
+   LIKED
+===================================================== */
+
+.bn-post-action--liked{
+
+    background:rgba(229,57,53,.12);
+
+    color:var(--primary);
+
+}
+
+.bn-post-action--liked svg{
+
+    color:var(--primary);
+
+}
+
+/* =====================================================
+   BOOKMARK
+===================================================== */
+
+.bn-post-action--bookmark{
+
+    margin-left:auto;
+
+}
+/* =====================================================
+   CODE CARD
+===================================================== */
+
+.bn-code-card{
+
+    margin-top:24px;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    background:#0E0E0E;
+
+    border:1px solid var(--border);
+
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+
+}
+
+/* ===================================== */
+
+.bn-code-card__header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:16px 20px;
+
+    border-bottom:1px solid var(--border);
+
+    background:#151515;
+
+}
+
+/* Remove Claude's fake mac dots */
+
+.bn-code-card__dots{
+
+    display:none;
+
+}
+
+/* ===================================== */
+
+.bn-lang-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:7px 14px;
+
+    border-radius:999px;
+
+    background:rgba(229,57,53,.12);
+
+    border:1px solid rgba(229,57,53,.2);
+
+    color:var(--primary);
+
+    font-family:"JetBrains Mono", monospace;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+/* ===================================== */
+
+.bn-code-card__copy{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:#1E1E1E;
+
+    color:var(--text-secondary);
+
+    transition:.25s;
+
+}
+
+.bn-code-card__copy:hover{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+/* ===================================== */
+
+.bn-code-card__body{
+
+    margin:0;
+
+    padding:24px;
+
+    overflow-x:auto;
+
+    background:#101010;
+
+    color:#ECECEC;
+
+    font-family:"JetBrains Mono", monospace;
+
+    font-size:14px;
+
+    line-height:1.9;
+
+}
+
+.bn-code-card__body code{
+
+    font-family:inherit;
+
+}
+
+/* ===================================== */
+
+.bn-code-card__body::-webkit-scrollbar{
+
+    height:8px;
+
+}
+
+.bn-code-card__body::-webkit-scrollbar-thumb{
+
+    background:#2F2F2F;
+
+    border-radius:999px;
+
+}
+
+/* =====================================================
+   LINK CARD
+===================================================== */
+
+.bn-link-card{
+
+    margin-top:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:#161616;
+
+    border:1px solid var(--border);
+
+    text-decoration:none;
+
+    transition:.25s;
+
+}
+
+.bn-link-card:hover{
+
+    transform:translateY(-2px);
+
+    border-color:rgba(229,57,53,.25);
+
+    background:#1A1A1A;
+
+}
+
+/* ===================================== */
+
+.bn-link-card__icon{
+
+    width:54px;
+
+    height:54px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+    background:rgba(229,57,53,.12);
+
+}
+
+.bn-link-card__icon svg{
+
+    color:var(--primary);
+
+}
+
+/* ===================================== */
+
+.bn-link-card__body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    min-width:0;
+
+}
+
+/* ===================================== */
+
+.bn-link-card__title{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:white;
+
+}
+
+.bn-link-card__desc{
+
+    color:var(--text-secondary);
+
+    line-height:1.7;
+
+    font-size:14px;
+
+}
+
+.bn-link-card__domain{
+
+    color:var(--primary);
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+/* =====================================================
+   COMMENT PREVIEW
+===================================================== */
+
+.bn-comment-preview{
+
+    margin-top:20px;
+
+    padding-top:20px;
+
+    border-top:1px solid var(--border);
+
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:900px){
+
+    .bn-post-card{
+
+        padding:22px;
+
+        border-radius:16px;
+
+    }
+
+    .bn-post-card__header{
+
+        gap:14px;
+
+    }
+
+    .bn-post-card__avatar{
+
+        width:46px;
+
+        height:46px;
+
+        font-size:16px;
+
+    }
+
+    .bn-post-card__content{
+
+        font-size:14px;
+
+        line-height:1.8;
+
+    }
+
+    .bn-post-card__footer{
+
+        flex-wrap:wrap;
+
+    }
+
+    .bn-post-action{
+
+        flex:1;
+
+        justify-content:center;
+
+    }
+
+    .bn-post-action--bookmark{
+
+        margin-left:0;
+
+    }
+
+    .bn-link-card{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+}

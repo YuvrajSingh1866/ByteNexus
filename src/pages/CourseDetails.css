@@ -1,0 +1,533 @@
+/* ===========================================================
+   COURSE DETAILS - BYTENEXUS
+=========================================================== */
+
+.course-details-page{
+    min-height:100vh;
+    background:#070d1a;
+    color:#eef4ff;
+    font-family:"Sora",sans-serif;
+}
+
+/* ================= HERO ================= */
+
+.course-hero{
+    width:min(1300px,92%);
+    margin:60px auto;
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:60px;
+    align-items:center;
+}
+
+.course-left{
+    display:flex;
+    flex-direction:column;
+}
+
+.course-badge{
+    width:fit-content;
+    padding:8px 16px;
+    border-radius:30px;
+    background:rgba(99,145,255,.12);
+    color:#8db5ff;
+    border:1px solid rgba(99,145,255,.25);
+    font-size:.82rem;
+    margin-bottom:22px;
+}
+
+.course-left h1{
+    font-size:3.5rem;
+    line-height:1.1;
+    margin-bottom:20px;
+    font-weight:700;
+}
+
+.course-left p{
+    color:#8ea6cb;
+    line-height:1.9;
+    font-size:1.05rem;
+    max-width:700px;
+}
+
+.course-info{
+    display:flex;
+    flex-wrap:wrap;
+    gap:25px;
+    margin-top:35px;
+    color:#c9d8ff;
+}
+
+.course-info span{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.95rem;
+}
+
+/* ================= BUTTONS ================= */
+
+.course-buttons{
+    display:flex;
+    gap:18px;
+    margin-top:40px;
+}
+
+.buy-btn{
+    border:none;
+    cursor:pointer;
+    padding:16px 34px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#4d7cff,#76a3ff);
+    color:white;
+    font-size:.95rem;
+    font-weight:600;
+    transition:.3s;
+}
+
+.buy-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 35px rgba(99,145,255,.25);
+}
+
+.wishlist-btn{
+    background:transparent;
+    color:#a9c0ec;
+    border:1px solid rgba(99,145,255,.25);
+    cursor:pointer;
+    padding:16px 34px;
+    border-radius:12px;
+    transition:.3s;
+}
+
+.wishlist-btn:hover{
+    background:rgba(99,145,255,.08);
+}
+
+/* ================= RIGHT CARD ================= */
+
+.course-right{
+    display:flex;
+    justify-content:center;
+}
+
+.course-thumbnail{
+
+    width:100%;
+    max-width:420px;
+    height:520px;
+
+    border-radius:24px;
+
+    background:
+    linear-gradient(135deg,#132448,#1c2e58);
+
+    border:1px solid rgba(99,145,255,.18);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    position:relative;
+    overflow:hidden;
+
+    box-shadow:
+    0 30px 70px rgba(0,0,0,.45);
+
+}
+
+.course-thumbnail::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(#6391ff55,transparent);
+
+    top:-120px;
+    right:-120px;
+
+}
+
+.course-thumbnail::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(#20b28c33,transparent);
+
+    bottom:-120px;
+    left:-120px;
+
+}
+
+.course-thumbnail h2{
+
+    font-size:2rem;
+    z-index:2;
+
+}
+
+.play-circle{
+
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin-bottom:25px;
+
+    font-size:2rem;
+
+    color:white;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.1);
+
+    backdrop-filter:blur(10px);
+
+    z-index:2;
+
+}
+
+.thumbnail-meta{
+
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+
+    margin-top:25px;
+
+    z-index:2;
+
+}
+
+.thumbnail-meta span{
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#d5e2ff;
+
+    font-size:.82rem;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+.course-hero{
+
+grid-template-columns:1fr;
+
+}
+
+.course-right{
+
+order:-1;
+
+}
+
+.course-left h1{
+
+font-size:2.6rem;
+
+}
+
+.course-thumbnail{
+
+height:420px;
+
+}
+
+}
+
+@media(max-width:650px){
+
+.course-buttons{
+
+flex-direction:column;
+
+}
+
+.buy-btn,
+.wishlist-btn{
+
+width:100%;
+
+}
+
+.course-left h1{
+
+font-size:2.1rem;
+
+}
+
+.course-thumbnail{
+
+height:340px;
+
+}
+
+}
+/* ================= COMMON SECTION ================= */
+
+.course-section{
+
+width:min(1200px,92%);
+margin:40px auto;
+
+}
+
+.course-section h2{
+
+font-size:2rem;
+margin-bottom:10px;
+color:#edf3ff;
+
+}
+
+/* ================= LEARN GRID ================= */
+
+.learn-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:18px;
+
+}
+
+.learn-card{
+
+padding:18px;
+border-radius:12px;
+background:#0d172b;
+border:1px solid rgba(99,145,255,.12);
+transition:.3s;
+
+}
+
+.learn-card:hover{
+
+transform:translateY(-4px);
+border-color:#6391ff;
+
+}
+
+/* ================= REQUIREMENTS ================= */
+
+.requirements-list{
+
+padding-left:22px;
+
+}
+
+.requirements-list li{
+
+margin-bottom:14px;
+color:#b7c8e6;
+line-height:1.7;
+
+}
+
+/* ================= CURRICULUM ================= */
+
+.curriculum-list{
+
+display:flex;
+flex-direction:column;
+gap:15px;
+
+}
+
+.curriculum-card{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:12px;
+
+border-radius:14px;
+
+background:#0d172b;
+
+border:1px solid rgba(99,145,255,.12);
+
+transition:.3s;
+
+}
+
+.curriculum-card:hover{
+
+border-color:#6391ff;
+
+}
+
+.curriculum-card h3{
+
+margin-bottom:6px;
+
+}
+
+/* ================= REVIEWS ================= */
+
+.reviews-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:10px;
+
+}
+
+.review-card{
+
+padding:22px;
+
+border-radius:14px;
+
+background:#0d172b;
+
+border:1px solid rgba(99,145,255,.12);
+
+}
+
+.review-rating{
+
+margin:12px 0;
+font-size:1.1rem;
+
+}.course-content{
+
+width:min(900px,92%);
+margin-bottom:160px;
+
+display:grid;
+
+grid-template-columns:2fr 380px;
+
+gap:40px;
+
+align-items:center;
+
+}
+
+.purchase-card{
+
+position:sticky;
+
+top:110px;
+
+padding:25px;
+
+border-radius:20px;
+
+background:#0d172b;
+
+border:1px solid rgba(99,145,255,.15);
+
+box-shadow:0 20px 50px rgba(0,0,0,.4);
+
+}
+
+.purchase-image{
+
+width:100%;
+
+height:220px;
+
+object-fit:cover;
+
+border-radius:14px;
+
+margin-bottom:20px;
+
+}
+
+.purchase-btn{
+
+width:100%;
+
+padding:15px;
+
+margin-top:20px;
+
+border:none;
+
+border-radius:10px;
+
+background:#6391ff;
+
+color:white;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+.wishlist-btn-card{
+
+width:100%;
+
+margin-top:15px;
+
+padding:14px;
+
+background:none;
+
+border:1px solid rgba(99,145,255,.2);
+
+color:white;
+
+border-radius:10px;
+
+cursor:pointer;
+
+}
+
+.includes{
+
+margin-top:30px;
+
+}
+
+.includes h4{
+
+margin-bottom:20px;
+
+}
+
+.includes p{
+
+margin-bottom:12px;
+
+color:#b8c8e8;
+
+}
