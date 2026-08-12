@@ -7,164 +7,330 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const session = require("express-session");
-const MongoStoreRaw = require("connect-mongo");
-const MongoStore = MongoStoreRaw.default || MongoStoreRaw;
+const MongoStore = require("connect-mongo");
+
 const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
 const userRoutes = require("./routes/userRoutes");
-const roomRoutes = require("./routes/roomRoutes"); // 👈 NEW
+const roomRoutes = require("./routes/roomRoutes");
+
+const connectDB = require("./config/db");
+const questions = require("./controllers/questions");
 
 const app = express();
-const connectDB = require("./config/db");
+const server = http.createServer(app);
 
 connectDB();
 
-// set view engine
+// ==========================================
+// VIEW ENGINE
+// ==========================================
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 
-// middleware
+// ==========================================
+// MIDDLEWARE
+// ==========================================
+
 app.use(express.json());
-app.use(cors({
-  origin: [
+
+
+// ==========================================
+// CORS
+// ==========================================
+
+const allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:5173",
     process.env.FRONTEND_URL
-  ],
-  credentials: true
-}));
-// Trust Render's proxy (IMPORTANT)
+].filter(Boolean);
+
+app.use(
+    cors({
+        origin: allowedOrigins,
+        credentials: true
+    })
+);
+
+
+// ==========================================
+// TRUST PROXY
+// Required for Render HTTPS cookies
+// ==========================================
+
 app.set("trust proxy", 1);
 
-app.use(
-  session({
-    secret: "test-secret",
-    resave: false,
-    saveUninitialized: true, // <-- CHANGE THIS
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      sameSite: "lax",
-    },
-  })
-);
+
+// ==========================================
+// SESSION
+// ==========================================
 
 app.use(
-  session({
-    secret: "test-secret",
-    resave: false,
-    saveUninitialized: true,
+    session({
+        secret: process.env.SESSION_SECRET || "development-secret",
 
-    cookie: {
-      httpOnly: true,
+        resave: false,
 
-      // true only in production
-      secure: process.env.NODE_ENV === "production",
+        saveUninitialized: false,
 
-      // Required for cross-origin cookies
-      sameSite:
-        process.env.NODE_ENV === "production"
-          ? "none"
-          : "lax",
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGO_URI
+        }),
 
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-    },
-  })
+        cookie: {
+            httpOnly: true,
+
+            secure: process.env.NODE_ENV === "production",
+
+            sameSite:
+                process.env.NODE_ENV === "production"
+                    ? "none"
+                    : "lax",
+
+            maxAge: 1000 * 60 * 60 * 24
+        }
+    })
 );
 
-// routes ,end points
+
+// ==========================================
+// ROUTES
+// ==========================================
+
 app.use("/api/subjects", subjectRoutes);
+
 app.use("/api/users", userRoutes);
+
 app.use("/api/rooms", roomRoutes);
 
-// base route
+
+// ==========================================
+// QUESTIONS
+// ==========================================
+
+app.get("/api/questions", (req, res) => {
+
+    const { topic, difficulty } = req.query;
+
+    const filtered = questions.find(
+        q =>
+            q.topic == topic &&
+            q.difficulty == difficulty
+    );
+
+    if (filtered) {
+        res.json(filtered);
+    } else {
+        res.status(404).json({
+            message:
+                "No question found for the given topic and difficulty"
+        });
+    }
+});
+
+
+// ==========================================
+// BASE ROUTE
+// ==========================================
+
 app.get("/", (req, res) => {
-  res.send("ByteNexus Backend Running 🚀");
+    res.send("ByteNexus Backend Running 🚀");
 });
 
-// about page route
+
+// ==========================================
+// ABOUT
+// ==========================================
+
 app.get("/about", (req, res) => {
-  res.render("about", { title: "About Us" });
+    res.render("about", {
+        title: "About Us"
+    });
 });
 
-// 404 handler
+
+// ==========================================
+// 404
+// ==========================================
+
 app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
+    res.status(404).json({
+        message: "Route not found"
+    });
 });
 
-// error handler
+
+// ==========================================
+// ERROR HANDLER
+// ==========================================
+
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Something went wrong" });
+
+    console.error(err.stack);
+
+    res.status(500).json({
+        message: "Something went wrong"
+    });
 });
 
-//socket io setup
 
-const server = http.createServer(app);
-
+// ==========================================
+// SOCKET.IO
+// ==========================================
 
 const io = new Server(server, {
-  cors: {
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      process.env.FRONTEND_URL
-    ],
-    methods: ["GET", "POST"],
-    credentials: true
-  }
+
+    cors: {
+        origin: allowedOrigins,
+
+        methods: ["GET", "POST"],
+
+        credentials: true
+    }
+
 });
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "dummy_key");
-const aiModel = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+
+
+// ==========================================
+// GEMINI AI
+// ==========================================
+
+const genAI = new GoogleGenerativeAI(
+    process.env.GEMINI_API_KEY || "dummy_key"
+);
+
+const aiModel = genAI.getGenerativeModel({
+    model: "gemini-3-flash-preview"
+});
+
 
 const SYSTEM_PROMPT = `
 You are ByteBot, the official AI assistant for ByteNexus.
-ByteNexus is an educational platform with real-time collaboration, a playground for coding, courses, and study materials.
-You must guide users on how to use the frontend and backend of this website, and help them understand coding concepts.
+
+ByteNexus is an educational platform with:
+- Real-time collaboration
+- Coding playground
+- Courses
+- Study materials
+- Coding challenges
+- Community features
+
+You must guide users on how to use the ByteNexus website
+and help them understand coding concepts.
+
 Be helpful, concise, and friendly.
 `;
 
+
+// ==========================================
+// SOCKET CONNECTION
+// ==========================================
+
 io.on("connection", (socket) => {
-  console.log("User connected to Chatbot:", socket.id);
 
-  socket.on("chat_message", async (msg) => {
-    try {
-      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "dummy_key") {
-        socket.emit("bot_response", "Please set GEMINI_API_KEY in the backend .env file to enable the AI Chatbot.");
-        return;
-      }
-      const prompt = `${SYSTEM_PROMPT}\nUser: ${msg}\nByteBot:`;
-      const result = await aiModel.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-      socket.emit("bot_response", text);
-    } catch (error) {
-      console.error("AI Error:", error);
-      socket.emit("bot_response", "Oops, I encountered an error while thinking. Try again later!");
-    }
-  });
+    console.log("User connected:", socket.id);
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected from Chatbot:", socket.id);
-  });
+
+    // ======================================
+    // CHATBOT
+    // ======================================
+
+    socket.on("chat_message", async (msg) => {
+
+        try {
+
+            if (
+                !process.env.GEMINI_API_KEY ||
+                process.env.GEMINI_API_KEY === "dummy_key"
+            ) {
+
+                socket.emit(
+                    "bot_response",
+                    "Please set GEMINI_API_KEY in the backend environment variables to enable the AI Chatbot."
+                );
+
+                return;
+            }
+
+
+            const prompt = `
+${SYSTEM_PROMPT}
+
+User: ${msg}
+
+ByteBot:
+`;
+
+
+            const result =
+                await aiModel.generateContent(prompt);
+
+            const response =
+                await result.response;
+
+            const text = response.text();
+
+
+            socket.emit(
+                "bot_response",
+                text
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "AI Error:",
+                error
+            );
+
+            socket.emit(
+                "bot_response",
+                "Oops, I encountered an error while thinking. Try again later!"
+            );
+        }
+    });
+
+
+    // ======================================
+    // DISCONNECT
+    // ======================================
+
+    socket.on("disconnect", () => {
+
+        console.log(
+            "User disconnected:",
+            socket.id
+        );
+
+    });
+
 });
+
+
+// ==========================================
+// SERVER
+// ==========================================
+
+const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
-  server.listen(5000, () => {
-    console.log(`🚀 Server running on import.meta.env.VITE_API_URL`);
-  });
+
+    server.listen(PORT, () => {
+
+        console.log(
+            `🚀 ByteNexus Backend running on port ${PORT}`
+        );
+
+    });
+
 }
 
-module.exports = { app, server };
 
-const questions = require("./controllers/questions");
-app.get("/api/questions", (req, res) => {
-  const {topic, difficulty} = req.query;
-  const filtered = questions.find(q => q.topic == topic && q.difficulty == difficulty);
-  if (filtered) {
-    res.json(filtered);
-  } else {
-    res.status(404).json({message: "No question found for the given topic and difficulty"});
-  }
-});
+module.exports = {
+    app,
+    server,
+    io
+};
