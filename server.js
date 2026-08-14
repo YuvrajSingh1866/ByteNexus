@@ -7,7 +7,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const { MongoStore } = require("connect-mongo");
 
 const protect = require("./middleware/auth");
 const subjectRoutes = require("./routes/subjects");
