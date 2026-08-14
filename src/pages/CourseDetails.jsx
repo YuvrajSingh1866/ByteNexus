@@ -2,7 +2,7 @@ import "./CourseDetails.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useParams } from "react-router-dom";
-import { COURSES } from "../data/courses";
+import { COURSES } from "../data/Courses";
 
 export default function CourseDetails() {
 
