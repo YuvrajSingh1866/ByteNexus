@@ -40,22 +40,40 @@ app.use(express.json());
 // ==========================================
 // CORS
 // ==========================================
+// ==========================================
+// CORS
+// ==========================================
+
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://byte-nexus-psi.vercel.app"
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://byte-nexus-psi.vercel.app"
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
+    origin: function (origin, callback) {
+
+        console.log("CORS request from:", origin);
+
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log("❌ CORS blocked:", origin);
+            callback(new Error("Not allowed by CORS"));
+        }
+
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.options("*", cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
+
+app.use(express.json());
 
 // ==========================================
 // TRUST PROXY
