@@ -47,7 +47,8 @@ app.use(express.json());
 const allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://byte-nexus-psi.vercel.app"
+    "https://byte-nexus-psi.vercel.app",
+    "https://byte-nexus-hx7i.vercel.app"
 ];
 
 app.use(cors({
@@ -66,11 +67,6 @@ app.use(cors({
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-app.options("*", cors({
-    origin: allowedOrigins,
-    credentials: true
 }));
 
 app.use(express.json());
@@ -205,7 +201,8 @@ const io = new Server(server, {
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
-      "https://byte-nexus-psi.vercel.app"
+      "https://byte-nexus-psi.vercel.app",
+      "https://byte-nexus-hx7i.vercel.app"   // add this
     ],
     methods: ["GET", "POST"],
     credentials: true
