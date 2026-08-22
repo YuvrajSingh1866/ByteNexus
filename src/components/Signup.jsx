@@ -59,14 +59,13 @@ const Signup = () => {
         setMessage("✅ Signup successful 🎉");
 
         // User came from invite
-        if (inviteToken) {
-          setTimeout(() => {
-            window.location.href =
-              `${import.meta.env.VITE_API_URL}/api/rooms/accept/${inviteToken}`;
-          }, 500);
-
-          return;
-        }
+       if (inviteToken) {
+  setTimeout(() => {
+    window.location.href =
+      `${import.meta.env.VITE_API_URL}/api/rooms/accept/${inviteToken}`;
+  }, 500);
+  return;
+}
 
         // Normal Signup
         setTimeout(() => {

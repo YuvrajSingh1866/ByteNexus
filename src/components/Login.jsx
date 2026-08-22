@@ -121,8 +121,11 @@ const Login = () => {
           {message && <p className="login-message">{message}</p>}
 
           <p className="login-signup">
-            Don't have an account? <Link to="/signup">Signup</Link>
-          </p>
+  Don't have an account?{" "}
+  <Link to={inviteToken ? `/signup?invite=${inviteToken}` : "/signup"}>
+    Signup
+  </Link>
+</p>
         </div>
       </div>
 

@@ -56,7 +56,11 @@ app.use(cors({
 
         console.log("CORS request from:", origin);
 
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (
+            !origin ||
+            allowedOrigins.includes(origin) ||
+            /^https:\/\/byte-nexus-.*\.vercel\.app$/.test(origin)
+        ) {
             callback(null, true);
         } else {
             console.log("❌ CORS blocked:", origin);
