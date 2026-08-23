@@ -1,8 +1,13 @@
 const nodemailer = require("nodemailer");
+
 console.log("EMAIL_USER =", process.env.EMAIL_USER);
 console.log("EMAIL_PASS =", process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌");
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for port 465, false for 587
+  family: 4,    // force IPv4 - avoids ENETUNREACH when IPv6 isn't routable
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,

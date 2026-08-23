@@ -11,8 +11,9 @@ const protect = require("../middleware/auth");
 // Create Room
 // ===============================
 router.post("/create", protect, async (req, res) => {
-console.log("===== CREATE ROOM HIT =====");
-console.log(req.body);
+  console.log("===== CREATE ROOM HIT =====");
+  console.log(req.body);
+
   try {
     const { topic, difficulty, invitedFriends } = req.body;
 
@@ -59,30 +60,46 @@ console.log(req.body);
         duration: 20,
       },
     });
-console.log("✅ Room created");
+
+    console.log("✅ Room created");
+
+    // Track which invites failed to send, so we can tell the user
+    const failedInvites = [];
+
     // Create invite for every email
     for (const email of invitedFriends) {
       const token = uuidv4();
 
       await Invite.create({
-  email,
-  token,
-  roomId,
-  senderId,
-  topic,
-  difficulty,
-});
+        email,
+        token,
+        roomId,
+        senderId,
+        topic,
+        difficulty,
+      });
 
-console.log("✅ Invite created");
+      console.log("✅ Invite created for", email);
+
       const link = `${process.env.BACKEND_URL}/api/rooms/accept/${token}`;
 
-      await sendEmail(email, link);
+      try {
+        await sendEmail(email, link);
+        console.log("✅ Email sent to", email);
+      } catch (emailErr) {
+        console.error(`❌ Failed to send invite email to ${email}:`, emailErr.message);
+        failedInvites.push(email);
+      }
     }
 
     res.status(200).json({
       success: true,
       roomId,
-      message: "Invites sent successfully 🚀",
+      message:
+        failedInvites.length > 0
+          ? `Room created, but some invites failed to send: ${failedInvites.join(", ")}`
+          : "Invites sent successfully 🚀",
+      failedInvites,
     });
   } catch (err) {
     console.error("========== CREATE ROOM ERROR ==========");
@@ -90,7 +107,7 @@ console.log("✅ Invite created");
 
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Something went wrong. Please try again.",
     });
   }
 });
@@ -163,7 +180,7 @@ router.get("/:roomId", protect, async (req, res) => {
 
     const room = await Room.findOne({ roomId })
       .populate("host", "name email")
-.populate("participants.user", "name email")
+      .populate("participants.user", "name email");
 
     if (!room) {
       return res.status(404).json({
@@ -182,7 +199,7 @@ router.get("/:roomId", protect, async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Something went wrong. Please try again.",
     });
   }
 });
