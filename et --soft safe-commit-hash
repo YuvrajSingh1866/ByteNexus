@@ -1,0 +1,14 @@
+[33m4aee445[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m fix: force IPv4 in nodemailer transporter
+[33mcad35d7[m[33m ([m[1;31morigin/master[m[33m)[m hey
+[33me16a799[m updaated
+[33m423de06[m u=did it
+[33m99f71fa[m sorted
+[33m3a02a45[m fix: force IPv4 DNS resolution to avoid ENETUNREACH on Render
+[33m3695065[m redeployy
+[33mda68f39[m redeployed
+[33m043f04c[m Fix production CORS
+[33m6679fa9[m Fix production CORS
+[33m84d0912[m Fix production CORS
+[33mc1f4f71[m updated
+[33m03a15a9[m updated again for deployment
+[33mefd527e[m backend updated
