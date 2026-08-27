@@ -38,28 +38,28 @@ const sendEmail = async (to, link) => {
 
   try {
     const info = await transporter.sendMail({
-      from: `"Code Arena" <${process.env.EMAIL_USER}>`,
-      to,
-      subject: "You're invited 🚀",
+  from: `"Code Arena" <${process.env.EMAIL_USER}>`,
+  to: to,
+  subject: "You're invited 🚀",
 
-      html: `
-        <h2>Join the coding room</h2>
-        <p>You have been invited to join a coding room.</p>
+  html: `
+    <h2>Join the coding room</h2>
+    <p>You have been invited to join a coding room.</p>
 
-        <p>
-          <a href="${link}">
-            Accept Invite
-          </a>
-        </p>
+    <p>
+      <a href="${link}">Accept Invite</a>
+    </p>
 
-        <p>${link}</p>
-      `,
-    });
+    <p>${link}</p>
+  `,
+});
 
-    console.log("✅ Email sent!");
-    console.log("Message ID:", info.messageId);
-
-    return info;
+console.log("✅ SMTP accepted the email");
+console.log("Message ID:", info.messageId);
+console.log("Response:", info.response);
+console.log("Accepted:", info.accepted);
+console.log("Rejected:", info.rejected);
+console.log("Envelope:", info.envelope);
   } catch (error) {
     console.error("❌ Failed to send email:", error);
     throw error;
