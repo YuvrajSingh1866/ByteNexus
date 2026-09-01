@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
- family: 4,
+
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -37,9 +37,13 @@ const sendEmail = async (to, link) => {
   console.log("📨 Sending email to:", to);
 
   try {
-    const info = await transporter.sendMail({
-  from: `"Code Arena" <${process.env.EMAIL_USER}>`,
-  to: to,
+   const info = await transporter.sendMail({
+  from: {
+    name: "Code Arena",
+    address: process.env.EMAIL_USER
+  },
+  to,
+  replyTo: process.env.EMAIL_USER,
   subject: "You're invited 🚀",
 
   html: `
@@ -51,7 +55,7 @@ const sendEmail = async (to, link) => {
     </p>
 
     <p>${link}</p>
-  `,
+  `
 });
 
 console.log("✅ SMTP accepted the email");
@@ -60,6 +64,7 @@ console.log("Response:", info.response);
 console.log("Accepted:", info.accepted);
 console.log("Rejected:", info.rejected);
 console.log("Envelope:", info.envelope);
+return info;
   } catch (error) {
     console.error("❌ Failed to send email:", error);
     throw error;
