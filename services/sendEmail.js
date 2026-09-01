@@ -1,70 +1,41 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-console.log("EMAIL_USER =", process.env.EMAIL_USER);
-console.log(
-  "EMAIL_PASS =",
-  process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌"
-);
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-
-  tls: {
-    minVersion: "TLSv1.2",
-  },
-
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 15000,
-});
-
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("❌ SMTP VERIFY ERROR:", error);
-  } else {
-    console.log("✅ SMTP READY:", success);
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (to, link) => {
   console.log("📨 Sending email to:", to);
 
   try {
-   const info = await transporter.sendMail({
-  from: {
-    name: "Code Arena",
-    address: process.env.EMAIL_USER
-  },
-  to,
-  replyTo: process.env.EMAIL_USER,
-  subject: "You're invited 🚀",
+    const { data, error } = await resend.emails.send({
+      from: "Code Arena <onboarding@resend.dev>",
+      to: [to],
+      subject: "You're invited 🚀",
 
-  html: `
-    <h2>Join the coding room</h2>
-    <p>You have been invited to join a coding room.</p>
+      html: `
+        <h2>Join the coding room</h2>
 
-    <p>
-      <a href="${link}">Accept Invite</a>
-    </p>
+        <p>You have been invited to join a coding room.</p>
 
-    <p>${link}</p>
-  `
-});
+        <p>
+          <a href="${link}">
+            Accept Invite
+          </a>
+        </p>
 
-console.log("✅ SMTP accepted the email");
-console.log("Message ID:", info.messageId);
-console.log("Response:", info.response);
-console.log("Accepted:", info.accepted);
-console.log("Rejected:", info.rejected);
-console.log("Envelope:", info.envelope);
-return info;
+        <p>${link}</p>
+      `,
+    });
+
+    if (error) {
+      console.error("❌ Resend error:", error);
+      throw new Error(error.message);
+    }
+
+    console.log("✅ Email sent successfully");
+    console.log("Email ID:", data.id);
+
+    return data;
+
   } catch (error) {
     console.error("❌ Failed to send email:", error);
     throw error;
